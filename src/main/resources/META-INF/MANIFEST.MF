@@ -1,0 +1,1 @@
+MixinConnector: net.programmer.igoodie.streamspawn.MixinConnector
