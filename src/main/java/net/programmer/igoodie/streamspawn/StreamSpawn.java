@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -23,9 +22,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import net.programmer.igoodie.goodies.runtime.GoodieObject;
-import net.programmer.igoodie.streamspawn.network.ModNetwork;
-import net.programmer.igoodie.streamspawn.network.packet.SboundEventPacket;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -88,16 +84,6 @@ public class StreamSpawn {
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
-        }
-
-        @SubscribeEvent
-        public static void test(ClientPlayerNetworkEvent.LoggingIn event) {
-            GoodieObject eventArgs = new GoodieObject();
-            eventArgs.put("actor", "iGoodie");
-
-            SboundEventPacket.Payload payload =
-                    new SboundEventPacket.Payload("Donation", eventArgs);
-            ModNetwork.CHANNEL.sendToServer(payload);
         }
 
     }
