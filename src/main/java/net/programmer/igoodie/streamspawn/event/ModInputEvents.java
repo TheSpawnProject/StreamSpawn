@@ -7,10 +7,11 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.programmer.igoodie.streamspawn.StreamSpawn;
 import net.programmer.igoodie.streamspawn.client.gui.screen.StreamSpawnScreen;
 import org.lwjgl.glfw.GLFW;
 
-@Mod.EventBusSubscriber(Dist.CLIENT)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD, modid = StreamSpawn.MOD_ID)
 public class ModInputEvents {
 
     public static KeyMapping keyStreamSpawnScreen;
@@ -20,13 +21,20 @@ public class ModInputEvents {
         event.register(keyStreamSpawnScreen = new KeyMapping("key.streamSpawnScreen", GLFW.GLFW_KEY_F4, "key.categories.streamspawn"));
     }
 
-    @SubscribeEvent
-    public static void test(InputEvent.Key event) {
-        Minecraft minecraft = Minecraft.getInstance();
+    @Mod.EventBusSubscriber(Dist.CLIENT)
+    public static class ForgeInputEvents {
 
-        if (minecraft.screen == null && keyStreamSpawnScreen.isDown()) {
-            minecraft.setScreen(new StreamSpawnScreen());
+        @SubscribeEvent
+        public static void handleKeyInput(InputEvent.Key event) {
+            Minecraft minecraft = Minecraft.getInstance();
+
+            if (keyStreamSpawnScreen.isDown()) {
+                if (minecraft.screen == null) {
+                    minecraft.setScreen(new StreamSpawnScreen());
+                }
+            }
         }
+
     }
 
 }
