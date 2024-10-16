@@ -82,7 +82,7 @@ public class StreamSpawnScreen extends Screen {
         renderBackground(poseStack);
 
         super.render(poseStack, mouseX, mouseY, partialTicks);
-        
+
         renderPlayers(poseStack);
 
         blockChangeTick += partialTicks;

@@ -12,7 +12,7 @@ import net.programmer.igoodie.streamspawn.client.gui.screen.StreamSpawnScreen;
 import org.lwjgl.glfw.GLFW;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD, modid = StreamSpawn.MOD_ID)
-public class ModInputEvents {
+public class InputEvents {
 
     public static KeyMapping keyStreamSpawnScreen;
 
