@@ -16,10 +16,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.programmer.igoodie.fabric.ExampleModFabric"
+      "net.programmer.igoodie.fabric.StreamSpawnFabric"
     ],
     "client": [
-      "net.programmer.igoodie.fabric.client.ExampleModFabricClient"
+      "net.programmer.igoodie.fabric.client.StreamSpawnFabricClient"
     ]
   },
   "mixins": [

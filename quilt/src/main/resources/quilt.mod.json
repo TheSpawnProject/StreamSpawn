@@ -14,9 +14,7 @@
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "init": [
-        "net.programmer.igoodie.quilt.ExampleModQuilt"
-      ]
+      "init": "net.programmer.igoodie.quilt.StreamSpawnQuilt"
     },
     "depends": [
       {
