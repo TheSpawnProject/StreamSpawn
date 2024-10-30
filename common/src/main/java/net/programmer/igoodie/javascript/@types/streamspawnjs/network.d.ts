@@ -28,12 +28,31 @@ interface SocketIOOptions extends SocketIOTransportOptions {
   transportOptions: Record<string, SocketIOTransportOptions>;
 }
 
+type EventName =
+  | "connect"
+  | "connecting"
+  | "disconnect"
+  | "error"
+  | "message"
+  | "connect_error"
+  | "connect_timeout"
+  | "reconnect"
+  | "reconnect_error"
+  | "reconnect_failed"
+  | "reconnect_attempt"
+  | "reconnecting"
+  | "ping"
+  | "pong"
+  | (string & {});
+
 declare namespace Network {
   export interface Socket {}
 
   export class SocketIO implements Socket {
     constructor(url: string);
 
-    set prepareOptions(val: (options: SocketIOOptions) => void);
+    modifyOptions(val: (options: SocketIOOptions) => void): void;
+
+    on(eventName: EventName, listener: (...args: any[]) => void): void;
   }
 }

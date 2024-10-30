@@ -1,8 +1,10 @@
 package net.programmer.igoodie.javascript;
 
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.function.Function;
 
 public class JavascriptEngine {
@@ -35,7 +37,23 @@ public class JavascriptEngine {
     }
 
     public static ScriptableObject createScope() {
-        return unsafe_useContext(Context::initSafeStandardObjects);
+        return createScope(null);
+    }
+
+    public static ScriptableObject createScope(ScriptableObject parentScope) {
+        return unsafe_useContext(context -> {
+            ScriptableObject scope = context.initSafeStandardObjects();
+            if (parentScope != null) scope.setParentScope(parentScope);
+            return scope;
+        });
+    }
+
+    public static <T extends Scriptable> void defineClass(Scriptable scope, Class<T> clazz) {
+        try {
+            ScriptableObject.defineClass(scope, clazz);
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static Object eval(ScriptableObject scope, String source) {
