@@ -34,6 +34,5 @@ emit("Twitch Follow", {
 });
 
 print("Scheduling after 5 sec");
-setTimeout(() => {
-  print("Schedule executed!");
-}, 5000);
+setTimeout(() => print("Schedule executed!"), 5000);
+setInterval(() => print("Interval!"), 1000);

@@ -5,6 +5,7 @@ declare const integrationConfig: any;
 declare function print(...args: any[]): void;
 
 declare function setTimeout(cb: () => void, delayMs: number): void;
+declare function setInterval(cb: () => void, delayMs: number): void;
 
 declare function registerSocket(socket: Network.SocketHost): void;
 
