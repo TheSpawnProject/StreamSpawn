@@ -11,6 +11,7 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.annotations.JSConstructor;
 import org.mozilla.javascript.annotations.JSFunction;
+import org.mozilla.javascript.annotations.JSGetter;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -42,6 +43,11 @@ public class SocketIOHost extends HostObject implements SocketHost {
     public SocketIOHost(String url) {
         this();
         this.url = URI.create(url);
+    }
+
+    @JSGetter
+    public Socket getSocket() {
+        return this.socket;
     }
 
     @JSFunction

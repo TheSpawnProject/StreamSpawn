@@ -1,8 +1,9 @@
 package net.programmer.igoodie.integration;
 
 import net.programmer.igoodie.javascript.JavascriptEngine;
-import net.programmer.igoodie.javascript.base.EmitFn;
-import net.programmer.igoodie.javascript.base.PrintFn;
+import net.programmer.igoodie.javascript.global.EmitFn;
+import net.programmer.igoodie.javascript.global.PrintFn;
+import net.programmer.igoodie.javascript.global.SetTimeoutFn;
 import net.programmer.igoodie.javascript.network.RegisterSocketFn;
 import net.programmer.igoodie.javascript.network.SocketHost;
 import net.programmer.igoodie.javascript.network.SocketIOHost;
@@ -22,6 +23,7 @@ public class ModIntegrations {
         JavascriptEngine.defineClass(libNetwork, SocketIOHost.class);
 
         globalScope.defineProperty("print", new PrintFn(), ScriptableObject.CONST);
+        globalScope.defineProperty("setTimeout", new SetTimeoutFn(), ScriptableObject.CONST);
         globalScope.defineProperty("Network", libNetwork, ScriptableObject.CONST);
         globalScope.defineProperty("registerSocket", new RegisterSocketFn(SOCKET_REGISTRY), ScriptableObject.CONST);
         globalScope.defineProperty("emit", new EmitFn(), ScriptableObject.CONST);
@@ -38,8 +40,9 @@ public class ModIntegrations {
                 "                  options.query = \"token=\" + integrationConfig.token;" +
                 "                });" +
                 "" +
+                " print(sio.socket);" +
                 "                sio.on(\"error\", (arg0) => {" +
-                "                  print(\"Error!\", arg0);" +
+                "                  print(sio.socket); print(\"Error!\", arg0);" +
                 "                });" +
                 "" +
                 "                sio.on(\"connect\", () => {" +
@@ -52,7 +55,12 @@ public class ModIntegrations {
                 "                sio.on(\"disconnect\", () => {" +
                 "                  print(\"Disconnected!\");" +
                 "                });" +
-                "                registerSocket(sio); emit('Foo', { bar: 1, baz: [2,3] })");
+                "                registerSocket(sio); emit('Foo', { bar: 1, baz: [2,3] })\n" +
+                "\n" +
+                "print(\"Scheduling after 5 sec\");\n" +
+                "setTimeout(() => {\n" +
+                "  print(\"Schedule executed!\");\n" +
+                "}, 5000);");
 
         SOCKET_REGISTRY.forEach(SocketHost::start);
 //        SOCKET_REGISTRY.forEach(SocketHost::stop);

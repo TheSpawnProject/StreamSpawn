@@ -72,9 +72,9 @@ public class NativeFormat {
                 if (i != 0) sb.append(", ");
                 Object value = nativeObject.get(id);
                 sb.append(id).append(": ");
-                if(value instanceof String) sb.append('"');
+                if (value instanceof String) sb.append('"');
                 sb.append(toString(value));
-                if(value instanceof String) sb.append('"');
+                if (value instanceof String) sb.append('"');
             }
 
             sb.append(" }");
@@ -88,14 +88,17 @@ public class NativeFormat {
             for (int i = 0; i < nativeArray.size(); i++) {
                 if (i != 0) sb.append(", ");
                 Object value = nativeArray.get(i);
-                if(value instanceof String) sb.append('"');
+                if (value instanceof String) sb.append('"');
                 sb.append(toString(value));
-                if(value instanceof String) sb.append('"');
+                if (value instanceof String) sb.append('"');
             }
 
             sb.append("]");
             return sb.toString();
         }
+
+        if (obj == null)
+            return "null";
 
         return obj.toString();
     }

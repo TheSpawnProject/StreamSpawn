@@ -11,6 +11,7 @@ sio.on("error", (arg0) => {
 });
 
 sio.on("connect", () => {
+  sio.socket.emit("ping", [], () => print("pong"));
   print("Connected!", x);
 });
 
@@ -31,3 +32,8 @@ emit("Twitch Follow", {
   foo: "bar",
   mods: [1, 2, 3, "admin"],
 });
+
+print("Scheduling after 5 sec");
+setTimeout(() => {
+  print("Schedule executed!");
+}, 5000);

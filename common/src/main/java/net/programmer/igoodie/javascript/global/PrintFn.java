@@ -1,4 +1,4 @@
-package net.programmer.igoodie.javascript.base;
+package net.programmer.igoodie.javascript.global;
 
 import net.programmer.igoodie.javascript.util.NativeFormat;
 import org.mozilla.javascript.BaseFunction;
