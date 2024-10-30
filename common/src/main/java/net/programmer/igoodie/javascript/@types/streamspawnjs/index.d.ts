@@ -1,6 +1,10 @@
 /// <reference path="network/network.d.ts"/>
 
+declare const integrationId: string;
+declare const integrationVersion: string;
 declare const integrationConfig: any;
+
+declare function stopIntegration(reason: string): void;
 
 declare function print(...args: any[]): void;
 

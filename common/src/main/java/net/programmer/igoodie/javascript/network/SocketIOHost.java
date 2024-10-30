@@ -53,17 +53,23 @@ public class SocketIOHost extends HostObject implements SocketHost {
     @JSFunction
     public void modifyOptions(Function consumer) {
         Context context = JavascriptEngine.CONTEXT.get();
-        consumer.call(context, getParentScope(), null, new Object[]{this.options});
+        Object[] args = {this.options};
+        consumer.call(context, getParentScope(), null, args);
     }
 
     @JSFunction
-    public void on(String eventName, Function listener) {
-        Context context = JavascriptEngine.CONTEXT.get();
+    public void on(String eventName, Function callback) {
         Scriptable scope = getParentScope();
         this.listeners.put(eventName, args -> {
-            listener.call(context, scope, null, Arrays.stream(args)
-                    .map(JavascriptConverter::convertToJSRealm)
-                    .toArray());
+            try {
+                Context context = JavascriptEngine.CONTEXT.get();
+                callback.call(context, scope, null, Arrays.stream(args)
+                        .map(JavascriptConverter::convertToJSRealm)
+                        .toArray());
+            } catch (Exception e) {
+                System.out.println(eventName);
+                e.printStackTrace();
+            }
         });
     }
 

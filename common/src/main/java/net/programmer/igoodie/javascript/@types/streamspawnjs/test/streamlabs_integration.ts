@@ -8,6 +8,7 @@ sio.modifyOptions((options) => {
 
 sio.on("error", (arg0) => {
   print("Error!", arg0);
+  stopIntegration("Error");
 });
 
 sio.on("connect", () => {
@@ -17,6 +18,7 @@ sio.on("connect", () => {
 
 sio.on("disconnect", () => {
   print("Disconnected!");
+  stopIntegration("Disconnected");
 });
 
 sio.on("event", (data) => {

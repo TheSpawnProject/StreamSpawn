@@ -1,5 +1,6 @@
 package net.programmer.igoodie.javascript.global;
 
+import net.programmer.igoodie.javascript.JavascriptEngine;
 import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
@@ -21,19 +22,18 @@ public class TimerFn extends BaseFunction {
     public static class CallbackTask extends TimerTask {
 
         protected final BaseFunction function;
-        protected final Context context;
         protected final Scriptable scope;
         protected final Scriptable thisObj;
 
-        public CallbackTask(BaseFunction function, Context context, Scriptable scope, Scriptable thisObj) {
+        public CallbackTask(BaseFunction function, Scriptable scope, Scriptable thisObj) {
             this.function = function;
-            this.context = context;
             this.scope = scope;
             this.thisObj = thisObj;
         }
 
         @Override
         public void run() {
+            Context context = JavascriptEngine.CONTEXT.get();
             function.call(context, scope, thisObj, new Object[0]);
         }
 
@@ -45,7 +45,7 @@ public class TimerFn extends BaseFunction {
         if (!(args[0] instanceof BaseFunction)) throw new IllegalArgumentException("Expected a callback");
         if (!(args[1] instanceof Number)) throw new IllegalArgumentException("Expected timeout ms");
 
-        CallbackTask task = new CallbackTask(((BaseFunction) args[0]), cx, scope, thisObj);
+        CallbackTask task = new CallbackTask(((BaseFunction) args[0]), scope, thisObj);
 
         if (repeats)
             timer.scheduleAtFixedRate(task, 0, ((Number) args[1]).intValue());

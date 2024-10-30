@@ -1,5 +1,6 @@
 package net.programmer.igoodie.integration;
 
+import net.programmer.igoodie.integration.base.Integration;
 import net.programmer.igoodie.javascript.JavascriptEngine;
 import net.programmer.igoodie.javascript.global.EmitFn;
 import net.programmer.igoodie.javascript.global.PrintFn;
@@ -9,6 +10,7 @@ import net.programmer.igoodie.javascript.network.SocketHost;
 import net.programmer.igoodie.javascript.network.SocketIOHost;
 import org.mozilla.javascript.ScriptableObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,39 +30,18 @@ public class ModIntegrations {
         globalScope.defineProperty("Network", libNetwork, ScriptableObject.CONST);
         globalScope.defineProperty("registerSocket", new RegisterSocketFn(SOCKET_REGISTRY), ScriptableObject.CONST);
         globalScope.defineProperty("emit", new EmitFn(), ScriptableObject.CONST);
+        globalScope.defineProperty("stopIntegration", new PrintFn(), ScriptableObject.CONST);
         globalScope.sealObject();
 
-        ScriptableObject scope = JavascriptEngine.createScope(globalScope);
-        JavascriptEngine.eval(scope, "const integrationConfig = { token: 'DUMMY_TOKEN' };");
-        JavascriptEngine.eval(scope, "" +
-                "const sio = new Network.SocketIO(\"https://sockets.streamlabs.com\");" +
-                "                                " +
-                "                const x = 5;" +
-                "" +
-                "                sio.modifyOptions((options) => {" +
-                "                  options.query = \"token=\" + integrationConfig.token;" +
-                "                });" +
-                "" +
-                " print(sio.socket);" +
-                "                sio.on(\"error\", (arg0) => {" +
-                "                  print(sio.socket); print(\"Error!\", arg0);" +
-                "                });" +
-                "" +
-                "                sio.on(\"connect\", () => {" +
-                "                  print(\"Connected!\", x);" +
-                "                });" +
-                "                sio.on(\"event\", (a) => {" +
-                "                  print(\"Event!\", a.event_id, a.message[0].platform, a);" +
-                "                });" +
-                "" +
-                "                sio.on(\"disconnect\", () => {" +
-                "                  print(\"Disconnected!\");" +
-                "                });" +
-                "                registerSocket(sio); emit('Foo', { bar: 1, baz: [2,3] })\n" +
-                "\n" +
-                "print(\"Scheduling after 5 sec\");\n" +
-                "setTimeout(() => print(\"Schedule executed!\"), 5000);\n" +
-                "setInterval(() => print(\"Interval!\"), 1000);");
+        try {
+            Integration integration = new Integration();
+            integration.downloadScript("https://pastebin.pl/view/raw/f186f919");
+            ScriptableObject integrationScope = integration.createScope(globalScope);
+            integration.getScript().exec(JavascriptEngine.CONTEXT.get(), integrationScope);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         SOCKET_REGISTRY.forEach(SocketHost::start);
 //        SOCKET_REGISTRY.forEach(SocketHost::stop);

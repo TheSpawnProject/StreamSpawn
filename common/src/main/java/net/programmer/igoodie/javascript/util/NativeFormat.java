@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeObject;
+import org.mozilla.javascript.Undefined;
 
 import java.util.Iterator;
 
@@ -96,6 +97,9 @@ public class NativeFormat {
             sb.append("]");
             return sb.toString();
         }
+
+        if (obj instanceof Undefined)
+            return "undefined";
 
         if (obj == null)
             return "null";
