@@ -2,15 +2,15 @@ plugins {
     id 'com.github.johnrengelman.shadow'
 }
 
+architectury {
+    platformSetupLoomIde()
+    forge()
+}
+
 loom {
     forge {
         mixinConfig "streamspawn.mixins.json"
     }
-}
-
-architectury {
-    platformSetupLoomIde()
-    forge()
 }
 
 configurations {
@@ -39,7 +39,11 @@ dependencies {
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionForge')
 
-    forgeRuntimeLibrary 'com.github.iGoodie.RuntimeGoodies:core:1.4.3'
+    implementation 'com.github.TheSpawnProject:TheSpawnLanguage:v1.5.1-alpha3'
+    implementation 'org.mozilla:rhino:1.7.15'
+
+    forgeRuntimeLibrary 'com.github.TheSpawnProject:TheSpawnLanguage:v1.5.1-alpha3'
+    forgeRuntimeLibrary 'org.mozilla:rhino:1.7.15'
 }
 
 processResources {
