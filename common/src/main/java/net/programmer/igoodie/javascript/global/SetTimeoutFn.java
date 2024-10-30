@@ -8,16 +8,9 @@ import org.mozilla.javascript.Scriptable;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TimerFn extends BaseFunction {
+public class SetTimeoutFn extends BaseFunction {
 
     protected Timer timer = new Timer();
-    protected boolean repeats;
-
-    public TimerFn() {}
-
-    public TimerFn(boolean repeats) {
-        this.repeats = repeats;
-    }
 
     public static class CallbackTask extends TimerTask {
 
@@ -47,10 +40,7 @@ public class TimerFn extends BaseFunction {
 
         CallbackTask task = new CallbackTask(((BaseFunction) args[0]), scope, thisObj);
 
-        if (repeats)
-            timer.scheduleAtFixedRate(task, 0, ((Number) args[1]).intValue());
-        else
-            timer.schedule(task, ((Number) args[1]).intValue());
+        timer.schedule(task, ((Number) args[1]).intValue());
 
         return super.call(cx, scope, thisObj, args);
     }

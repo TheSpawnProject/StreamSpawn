@@ -2,18 +2,17 @@ const sio = new Network.SocketIO("https://sockets.streamlabs.com");
 
 const x = 5;
 
-sio.modifyOptions((options) => {
-  options.query = "token=" + integrationConfig.token;
-});
+sio.options.query = "token=" + integrationConfig.token;
 
-sio.on("error", (arg0) => {
-  print("Error!", arg0);
+sio.on("error", (error) => {
+  print("Error!", error);
   stopIntegration("Error");
 });
 
 sio.on("connect", () => {
   sio.socket.emit("ping", [], () => print("pong"));
   print("Connected!", x);
+  setTimeout(() => print("Connected 5 seconds before this!"), 5000);
 });
 
 sio.on("disconnect", () => {
@@ -26,15 +25,11 @@ sio.on("event", (data) => {
   const eventFor = data.for;
   const message = data.message[0] ?? data.message;
   print(eventType, eventFor, message);
+
+  emit("Twitch Follow", {
+    foo: "bar",
+    mods: [1, 2, 3, "admin"],
+  });
 });
 
-registerSocket(sio);
-
-emit("Twitch Follow", {
-  foo: "bar",
-  mods: [1, 2, 3, "admin"],
-});
-
-print("Scheduling after 5 sec");
-setTimeout(() => print("Schedule executed!"), 5000);
-setInterval(() => print("Interval!"), 1000);
+registerService(sio);

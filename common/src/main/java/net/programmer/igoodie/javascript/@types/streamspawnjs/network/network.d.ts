@@ -1,14 +1,11 @@
 /// <reference path="socketio.d.ts"/>
 
 declare namespace Network {
-  export interface SocketHost {}
-
-  export class SocketIO implements SocketHost {
+  export class SocketIO extends Service {
     constructor(url: string);
 
     get socket(): SocketIO.Socket;
-
-    modifyOptions(val: (options: SocketIO.Options) => void): void;
+    get options(): SocketIO.Options;
 
     on(eventName: SocketIO.EventName, listener: (...args: any[]) => void): void;
   }

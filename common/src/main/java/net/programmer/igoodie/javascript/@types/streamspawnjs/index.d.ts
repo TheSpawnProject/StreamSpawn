@@ -9,9 +9,12 @@ declare function stopIntegration(reason: string): void;
 declare function print(...args: any[]): void;
 
 declare function setTimeout(cb: () => void, delayMs: number): void;
-declare function setInterval(cb: () => void, delayMs: number): void;
 
-declare function registerSocket(socket: Network.SocketHost): void;
+declare class Service {
+  private type(): Symbol[];
+}
+
+declare function registerService(service: Service): void;
 
 declare type EventArgs = {
   [key: string]:

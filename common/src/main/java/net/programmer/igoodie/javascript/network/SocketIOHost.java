@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SocketIOHost extends HostObject implements SocketHost {
+public class SocketIOHost extends HostObject {
 
     protected URI url;
     protected Socket socket;
@@ -50,11 +50,9 @@ public class SocketIOHost extends HostObject implements SocketHost {
         return this.socket;
     }
 
-    @JSFunction
-    public void modifyOptions(Function consumer) {
-        Context context = JavascriptEngine.CONTEXT.get();
-        Object[] args = {this.options};
-        consumer.call(context, getParentScope(), null, args);
+    @JSGetter
+    public IO.Options getOptions() {
+        return this.options;
     }
 
     @JSFunction
@@ -74,14 +72,14 @@ public class SocketIOHost extends HostObject implements SocketHost {
     }
 
     @Override
-    public void start() {
+    public void begin() {
         this.socket = IO.socket(url, options);
         listeners.forEach((eventName, listener) -> this.socket.on(eventName, listener));
         this.socket.connect();
     }
 
     @Override
-    public void stop() {
+    public void terminate() {
         this.socket.disconnect();
         this.socket.close();
         this.socket = null;

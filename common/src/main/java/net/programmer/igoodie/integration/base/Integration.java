@@ -1,6 +1,7 @@
 package net.programmer.igoodie.integration.base;
 
 import net.programmer.igoodie.javascript.JavascriptEngine;
+import net.programmer.igoodie.javascript.base.HostObject;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.ScriptableObject;
@@ -10,13 +11,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Integration {
 
-    protected String name;
-    protected String version;
+    protected final String name;
+    protected final String version;
     protected Script script;
+
+    public final List<HostObject> boundObjects = new ArrayList<>();
+
+    public Integration(String name, String version) {
+        this.name = name;
+        this.version = version;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     public Script getScript() {
         return script;
@@ -37,7 +51,7 @@ public class Integration {
             Context context = JavascriptEngine.CONTEXT.get();
             this.script = context.compileString(source, name + ".integration.js", 1, null);
         } catch (Exception e) {
-
+            throw new RuntimeException("Unable to load script", e);
         }
     }
 
