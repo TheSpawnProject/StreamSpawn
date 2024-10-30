@@ -26,3 +26,8 @@ sio.on("event", (data) => {
 });
 
 registerSocket(sio);
+
+emit("Twitch Follow", {
+  foo: "bar",
+  mods: [1, 2, 3, "admin"],
+});

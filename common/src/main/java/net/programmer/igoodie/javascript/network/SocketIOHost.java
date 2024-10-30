@@ -56,7 +56,7 @@ public class SocketIOHost extends HostObject implements SocketHost {
         Scriptable scope = getParentScope();
         this.listeners.put(eventName, args -> {
             listener.call(context, scope, null, Arrays.stream(args)
-                    .map(JavascriptConverter::convertToJS)
+                    .map(JavascriptConverter::convertToJSRealm)
                     .toArray());
         });
     }

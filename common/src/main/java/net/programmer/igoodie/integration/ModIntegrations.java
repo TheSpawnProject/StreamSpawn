@@ -1,6 +1,7 @@
 package net.programmer.igoodie.integration;
 
 import net.programmer.igoodie.javascript.JavascriptEngine;
+import net.programmer.igoodie.javascript.base.EmitFn;
 import net.programmer.igoodie.javascript.base.PrintFn;
 import net.programmer.igoodie.javascript.network.RegisterSocketFn;
 import net.programmer.igoodie.javascript.network.SocketHost;
@@ -16,12 +17,14 @@ public class ModIntegrations {
 
     public static void initialize() {
         ScriptableObject globalScope = JavascriptEngine.createScope();
-        ScriptableObject libNetwork = JavascriptEngine.createScope();
 
+        ScriptableObject libNetwork = JavascriptEngine.createScope();
         JavascriptEngine.defineClass(libNetwork, SocketIOHost.class);
+
         globalScope.defineProperty("print", new PrintFn(), ScriptableObject.CONST);
         globalScope.defineProperty("Network", libNetwork, ScriptableObject.CONST);
         globalScope.defineProperty("registerSocket", new RegisterSocketFn(SOCKET_REGISTRY), ScriptableObject.CONST);
+        globalScope.defineProperty("emit", new EmitFn(), ScriptableObject.CONST);
         globalScope.sealObject();
 
         ScriptableObject scope = JavascriptEngine.createScope(globalScope);
@@ -43,13 +46,13 @@ public class ModIntegrations {
                 "                  print(\"Connected!\", x);" +
                 "                });" +
                 "                sio.on(\"event\", (a) => {" +
-                "                  print(\"Event!\", a.event_id, a);" +
+                "                  print(\"Event!\", a.event_id, a.message[0].platform, a);" +
                 "                });" +
                 "" +
                 "                sio.on(\"disconnect\", () => {" +
                 "                  print(\"Disconnected!\");" +
                 "                });" +
-                "                registerSocket(sio);");
+                "                registerSocket(sio); emit('Foo', { bar: 1, baz: [2,3] })");
 
         SOCKET_REGISTRY.forEach(SocketHost::start);
 //        SOCKET_REGISTRY.forEach(SocketHost::stop);
