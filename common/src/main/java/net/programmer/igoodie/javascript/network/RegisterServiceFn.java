@@ -1,7 +1,7 @@
 package net.programmer.igoodie.javascript.network;
 
 import net.programmer.igoodie.integration.base.Integration;
-import net.programmer.igoodie.javascript.base.HostObject;
+import net.programmer.igoodie.javascript.base.ServiceObject;
 import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
@@ -20,11 +20,11 @@ public class RegisterServiceFn extends BaseFunction {
     @Override
     public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
         if (args.length != 1) throw new IllegalArgumentException("Expected only one argument");
-        if (!(args[0] instanceof HostObject)) throw new IllegalArgumentException("Expected a Socket");
+        if (!(args[0] instanceof ServiceObject)) throw new IllegalArgumentException("Expected a Socket");
 
         String integrationId = (String) scope.get("integrationId", scope);
         Integration integration = integrationRegistry.get(integrationId);
-        integration.boundObjects.add(((HostObject) args[0]));
+        integration.services.add(((ServiceObject) args[0]));
 
         return Undefined.instance;
     }

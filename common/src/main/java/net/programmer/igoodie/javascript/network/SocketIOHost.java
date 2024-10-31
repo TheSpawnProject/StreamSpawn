@@ -5,7 +5,7 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import net.programmer.igoodie.javascript.JavascriptConverter;
 import net.programmer.igoodie.javascript.JavascriptEngine;
-import net.programmer.igoodie.javascript.base.HostObject;
+import net.programmer.igoodie.javascript.base.ServiceObject;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SocketIOHost extends HostObject {
+public class SocketIOHost extends ServiceObject {
 
     protected URI url;
     protected Socket socket;

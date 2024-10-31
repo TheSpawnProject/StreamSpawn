@@ -4,7 +4,7 @@
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "typeRoots": ["@types"],
-    "lib": ["ES2015", "ES2016", "ES2017", "ES2018"],
+    "lib": ["ES2015", "ES2016", "ES2017"],
     "target": "ES2015"
   }
 }

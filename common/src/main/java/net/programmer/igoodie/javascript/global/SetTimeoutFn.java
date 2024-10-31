@@ -10,7 +10,7 @@ import java.util.TimerTask;
 
 public class SetTimeoutFn extends BaseFunction {
 
-    protected Timer timer = new Timer();
+    protected Timer timer = new Timer("JS-Timeout");
 
     public static class CallbackTask extends TimerTask {
 

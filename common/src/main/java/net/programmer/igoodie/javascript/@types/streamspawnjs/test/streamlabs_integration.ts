@@ -33,3 +33,23 @@ sio.on("event", (data) => {
 });
 
 registerService(sio);
+
+print("Setting up a bromise");
+
+new Bromise((resolve) => {
+  setTimeout(() => {
+    resolve("DONE!");
+  }, 1000);
+})
+  .then(print)
+  .catch();
+
+new Bromise((r) => r(1))
+  .then(() => {
+    throw new Error("Oopsie");
+  })
+  .then(() => print("Order doesn't matter"))
+  .catch((err) => {
+    throw new Error("Zoop");
+  })
+  .catch((err) => print(err));

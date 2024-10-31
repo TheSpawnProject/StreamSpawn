@@ -1,7 +1,7 @@
 package net.programmer.igoodie.integration.base;
 
 import net.programmer.igoodie.javascript.JavascriptEngine;
-import net.programmer.igoodie.javascript.base.HostObject;
+import net.programmer.igoodie.javascript.base.ServiceObject;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.ScriptableObject;
@@ -21,7 +21,7 @@ public class Integration {
     protected final String version;
     protected Script script;
 
-    public final List<HostObject> boundObjects = new ArrayList<>();
+    public final List<ServiceObject> services = new ArrayList<>();
 
     public Integration(String name, String version) {
         this.name = name;
@@ -48,11 +48,15 @@ public class Integration {
         InputStream inputStream = new URL(url).openStream();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             String source = reader.lines().collect(Collectors.joining("\n"));
-            Context context = JavascriptEngine.CONTEXT.get();
-            this.script = context.compileString(source, name + ".integration.js", 1, null);
+            this.loadScript(source);
         } catch (Exception e) {
             throw new RuntimeException("Unable to load script", e);
         }
+    }
+
+    public void loadScript(String source) {
+        Context context = JavascriptEngine.CONTEXT.get();
+        this.script = context.compileString(source, name + ".integration.js", 1, null);
     }
 
 }

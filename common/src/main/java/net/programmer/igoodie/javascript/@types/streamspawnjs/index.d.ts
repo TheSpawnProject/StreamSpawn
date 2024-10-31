@@ -8,6 +8,8 @@ declare function stopIntegration(reason: string): void;
 
 declare function print(...args: any[]): void;
 
+declare class Bromise<T> extends Promise<T> {}
+
 declare function setTimeout(cb: () => void, delayMs: number): void;
 
 declare class Service {
