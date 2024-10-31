@@ -4,6 +4,7 @@ import net.programmer.igoodie.javascript.JavascriptEngine;
 import net.programmer.igoodie.javascript.base.ServiceObject;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Script;
+import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
 import java.io.BufferedReader;
@@ -36,7 +37,7 @@ public class Integration {
         return script;
     }
 
-    public ScriptableObject createScope(ScriptableObject parentScope) {
+    public ScriptableObject createScope(Scriptable parentScope) {
         ScriptableObject integrationScope = JavascriptEngine.createScope(parentScope);
         JavascriptEngine.eval(integrationScope, "const integrationId = '" + name + "'");
         JavascriptEngine.eval(integrationScope, "const integrationVersion = '" + version + "'");

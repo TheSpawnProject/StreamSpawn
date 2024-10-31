@@ -1,4 +1,4 @@
-package net.programmer.igoodie.javascript.network;
+package net.programmer.igoodie.javascript.global;
 
 import net.programmer.igoodie.integration.base.Integration;
 import net.programmer.igoodie.javascript.base.ServiceObject;

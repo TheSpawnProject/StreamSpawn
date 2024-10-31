@@ -40,7 +40,7 @@ public class JavascriptEngine {
         return createScope(null);
     }
 
-    public static ScriptableObject createScope(ScriptableObject parentScope) {
+    public static ScriptableObject createScope(Scriptable parentScope) {
         return unsafe_useContext(context -> {
             ScriptableObject scope = context.initSafeStandardObjects();
             if (parentScope != null) scope.setParentScope(parentScope);
