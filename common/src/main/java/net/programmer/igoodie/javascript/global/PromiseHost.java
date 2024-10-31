@@ -70,6 +70,14 @@ public class PromiseHost extends HostObject {
                     Object[] args = {this.result};
                     this.result = onFulfilled.call(context, scope, null, args);
 
+                    if (this.result instanceof PromiseHost) {
+                        PromiseHost resultPromise = (PromiseHost) this.result;
+                        resultPromise.fulfillQueue = new LinkedList<>(this.fulfillQueue);
+                        resultPromise.rejectQueue = new LinkedList<>(this.rejectQueue);
+                        resultPromise.executeFulfill();
+                        break;
+                    }
+
                 } catch (Exception e) {
                     this.state = PromiseState.REJECTED;
                     this.result = e;
@@ -93,6 +101,14 @@ public class PromiseHost extends HostObject {
                     Context context = JavascriptEngine.CONTEXT.get();
                     Object[] args = {this.result};
                     this.result = onRejected.call(context, scope, null, args);
+
+                    if (this.result instanceof PromiseHost) {
+                        PromiseHost resultPromise = (PromiseHost) this.result;
+                        resultPromise.fulfillQueue = new LinkedList<>(this.fulfillQueue);
+                        resultPromise.rejectQueue = new LinkedList<>(this.rejectQueue);
+                        resultPromise.executeReject();
+                        break;
+                    }
 
                 } catch (Exception e) {
                     this.result = e;

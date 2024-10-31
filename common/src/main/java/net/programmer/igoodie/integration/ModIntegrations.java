@@ -31,6 +31,8 @@ public class ModIntegrations {
                     "})" +
                     "   .then(res => {print(res);return res + 'A'})" +
                     "   .then(print)" +
+                    "   .then(res => new Bromise(r => r(1)))" +
+                    "   .then(print)" +
                     "   .then(res => { throw new Error('Wopsie') })" +
                     "   .catch(err => print('Omg an error', err.getValue()));");
             INTEGRATION_REGISTRY.put(integration.getName(), integration);
