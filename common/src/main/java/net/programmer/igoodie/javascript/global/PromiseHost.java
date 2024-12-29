@@ -85,7 +85,6 @@ public class PromiseHost extends HostObject {
                     break;
                 }
             }
-
         }
     }
 

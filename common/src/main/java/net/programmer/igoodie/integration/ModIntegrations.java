@@ -9,7 +9,6 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +21,7 @@ public class ModIntegrations {
 
         try {
             Integration integration = new Integration("test-streamlabs", "1.0.0");
-            integration.downloadScript("https://pastebin.com/raw/B1J0kQym");
+//            integration.downloadScript("https://pastebin.com/raw/B1J0kQym");
             integration.loadScript("" +
                     "new Bromise((resolve) => {\n" +
                     "  setTimeout(() => {\n" +
@@ -41,7 +40,7 @@ public class ModIntegrations {
 
             integration.services.forEach(ServiceObject::begin);
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
