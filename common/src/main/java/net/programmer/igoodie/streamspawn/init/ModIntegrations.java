@@ -17,7 +17,7 @@ public class ModIntegrations {
     private static final Map<String, Integration> INTEGRATION_REGISTRY = new HashMap<>();
 
     public static void initialize() {
-        ScriptableObject globalScope = SpawnJS.createGlobals();
+        ScriptableObject globalScope = SpawnJS.createGlobal();
 
         // TODO: Migrate those:
         globalScope.defineProperty("registerService", new RegisterServiceFn(INTEGRATION_REGISTRY), ScriptableObject.CONST);
@@ -42,6 +42,42 @@ public class ModIntegrations {
 //                    "   .then(print)" +
 //                    "   .then(res => { throw new Error('Wopsie') })" +
 //                    "   .catch(err => print('Omg an error', err.getValue()));");
+            integration.loadScript("""
+                console.log(Buffer.alloc(11, 'aGVsbG8gd29ybGQ=', 'base64'));
+                console.log(Buffer.alloc(9));
+//                console.log(Buffer.alloc(5, 1700));
+                console.log(Buffer.alloc(5, "a"));
+                console.log(Buffer.alloc(5, 0xff));
+//                console.log(Buffer.alloc(5, "a", "utf-8"));
+                
+//                console.log(Buffer.from([257, 257.5, -255, '1']));
+                
+//                const arr = new Uint16Array(2);
+//                arr[0] = 5000;
+//                arr[1] = 4000;
+//                console.log(Buffer.from(arr));
+//                arr[1] = 6000;
+//                console.log(Buffer.from(arr));
+//                
+//                console.log(Buffer.alloc(8).fill(0x15));
+//                    const tcpClient = new Network.TcpClient("127.0.0.1", 8080);
+//                    
+//                    tcpClient.bufferSize = 10000;
+//                    
+//                    tcpClient.onConnect = () => {
+//                      console.log("Connected");
+//                    };
+//                    
+//                    tcpClient.onError = (reason) => {
+//                        console.log("Error:", reason);
+//                    }
+//                    
+//                    tcpClient.onChunk = (buffer, readLength) => {
+//                      console.log("Received =", readLength, buffer)
+//                    }
+//                    
+//                    registerService(tcpClient);
+                    """);
             INTEGRATION_REGISTRY.put(integration.getName(), integration);
             ScriptableObject integrationScope = integration.createScope(globalScope);
             integration.getScript().exec(JavascriptEngine.CONTEXT.get(), integrationScope);

@@ -1,23 +1,19 @@
-package net.programmer.igoodie.streamspawn.javascript.spawnjs.network;
+package net.programmer.igoodie.streamspawn.javascript.spawnjs.network.hosts;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
-import net.programmer.igoodie.streamspawn.javascript.JavascriptConverter;
-import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
 import net.programmer.igoodie.streamspawn.javascript.base.ServiceObject;
-import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
-import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.annotations.JSConstructor;
 import org.mozilla.javascript.annotations.JSFunction;
 import org.mozilla.javascript.annotations.JSGetter;
 
 import java.net.URI;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO: Support SIOv1, SIOv2, SIOv3 and SIOv4
 public class SocketIOHost extends ServiceObject {
 
     protected URI url;
@@ -57,18 +53,15 @@ public class SocketIOHost extends ServiceObject {
 
     @JSFunction
     public void on(String eventName, Function callback) {
-        Scriptable scope = getParentScope();
-        this.listeners.put(eventName, args -> {
-            try {
-                Context context = JavascriptEngine.CONTEXT.get();
-                callback.call(context, scope, null, Arrays.stream(args)
-                        .map(JavascriptConverter::convertToJSRealm)
-                        .toArray());
-            } catch (Exception e) {
-                System.out.println(eventName);
-                e.printStackTrace();
-            }
-        });
+        this.listeners.put(eventName, args -> bindListener(callback).call(args));
+    }
+
+    @JSFunction
+    public void off(String eventName) {
+        if (this.listeners.containsKey(eventName)) {
+            this.listeners.remove(eventName);
+            this.socket.off(eventName);
+        }
     }
 
     @Override

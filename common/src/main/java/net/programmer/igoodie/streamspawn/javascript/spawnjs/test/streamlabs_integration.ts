@@ -6,7 +6,7 @@ sio.options.query = "token=" + integrationConfig.token;
 
 sio.on("error", (error) => {
   console.log("Error!", error);
-  stopIntegration("Error");
+  stopIntegration("Stopping because of an error: " + error);
 });
 
 sio.on("connect", () => {
@@ -55,4 +55,3 @@ new Bromise((r) => r(1))
   .catch((err) => console.log(err));
 
 console.log();
-

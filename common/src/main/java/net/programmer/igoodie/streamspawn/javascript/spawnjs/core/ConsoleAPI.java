@@ -32,8 +32,8 @@ public class ConsoleAPI extends RuntimeAPI {
 
     }
 
-    public static String stringify(Object obj) {
-        if (obj instanceof NativeObject nativeObject) {
+    public static String stringify(Object nativeValue) {
+        if (nativeValue instanceof NativeObject nativeObject) {
             StringBuilder sb = new StringBuilder("{ ");
 
             Object[] ids = nativeObject.getIds();
@@ -51,7 +51,7 @@ public class ConsoleAPI extends RuntimeAPI {
             return sb.toString();
         }
 
-        if (obj instanceof NativeArray nativeArray) {
+        if (nativeValue instanceof NativeArray nativeArray) {
             StringBuilder sb = new StringBuilder("[");
 
             for (int i = 0; i < nativeArray.size(); i++) {
@@ -66,13 +66,25 @@ public class ConsoleAPI extends RuntimeAPI {
             return sb.toString();
         }
 
-        if (obj instanceof Undefined)
+        if (nativeValue instanceof Undefined)
             return "undefined";
 
-        if (obj == null)
+        if (nativeValue == null)
             return "null";
 
-        return obj.toString();
+        return nativeValue.toString();
+    }
+
+    public static String stringifyAll(String delimeter, Object... nativeValues) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < nativeValues.length; i++) {
+            Object value = nativeValues[i];
+            sb.append(stringify(value));
+            if (i != nativeValues.length - 1) sb.append(delimeter);
+        }
+
+        return sb.toString();
     }
 
 }

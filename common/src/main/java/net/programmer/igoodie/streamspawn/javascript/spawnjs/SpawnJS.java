@@ -17,7 +17,7 @@ public class SpawnJS extends RuntimeAPI {
         new NetworkAPI().init(scope);
     }
 
-    public static ScriptableObject createGlobals() {
+    public static ScriptableObject createGlobal() {
         ScriptableObject globalScope = JavascriptEngine.createScope();
         new SpawnJS().init(globalScope);
         return globalScope;
