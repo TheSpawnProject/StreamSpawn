@@ -40,7 +40,7 @@ declare namespace Buffer {
 }
 
 declare class Buffer {
-  private constructor();
+  public constructor(content: number[]);
 
   public static alloc(size: number): Buffer;
   public static alloc(size: number, fill: number): Buffer;
@@ -61,10 +61,4 @@ declare class Buffer {
     encoding?: Buffer.Encoding
   ): Buffer;
   public fill(value: number, offset?: number, end?: number): Buffer;
-  public fill(
-    value: string | Uint8Array | number,
-    offset?: number,
-    end?: number,
-    encoding?: Buffer.Encoding
-  ): Buffer;
 }

@@ -1,9 +1,12 @@
 package net.programmer.igoodie.streamspawn.javascript.spawnjs.network.hosts;
 
+import net.programmer.igoodie.goodies.util.accessor.ArrayAccessor;
 import net.programmer.igoodie.streamspawn.javascript.base.HostObject;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.core.ConsoleAPI;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeArray;
-import org.mozilla.javascript.Undefined;
+import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.annotations.JSConstructor;
 import org.mozilla.javascript.annotations.JSFunction;
 import org.mozilla.javascript.annotations.JSStaticFunction;
@@ -23,12 +26,8 @@ public class BufferHost extends HostObject {
     }
 
     @JSConstructor
-    protected BufferHost(int[] buffer) {
-        byte[] byteBuffer = new byte[buffer.length];
-        for (int i = 0; i < buffer.length; i++) {
-            byteBuffer[i] = (byte) (buffer[i]);
-        }
-        this.buffer = byteBuffer;
+    public BufferHost(NativeArray buffer) {
+        this.buffer = from(buffer).buffer;
     }
 
     @Override
@@ -37,32 +36,33 @@ public class BufferHost extends HostObject {
     }
 
     @JSStaticFunction("alloc")
-    public static BufferHost _alloc(Object arg0, Object arg1, Object arg2) {
+    public static BufferHost _alloc(Context cx, Scriptable thisObj, Object[] args, Function funObj) {
+        ArrayAccessor<Object> argsAccessor = ArrayAccessor.of(args);
+        Object arg0 = argsAccessor.get(0).orElse(null);
+        Object arg1 = argsAccessor.get(1).orElse(null);
+        Object arg2 = argsAccessor.get(2).orElse(null);
+
         if (arg0 instanceof Number size) {
             if (arg1 instanceof Number fill) {
                 // Buffer.alloc(5, 0xff);
-                return alloc(size.intValue(), fill.byteValue());
+                return bindToScope(alloc(size.intValue(), fill.byteValue()), funObj.getParentScope());
             }
             if (arg1 instanceof String fill) {
                 if (arg2 instanceof String encoding) {
                     // Buffer.alloc(11, 'aGVsbG8gd29ybGQ=', 'base64');
-                    return alloc(size.intValue(), fill, encoding);
+                    return bindToScope(alloc(size.intValue(), fill, encoding), funObj.getParentScope());
                 }
 
                 // Buffer.alloc(5, 'a');
-                return alloc(size.intValue(), fill);
+                return bindToScope(alloc(size.intValue(), fill, "utf8"), funObj.getParentScope());
             }
 
             // Buffer.alloc(9);
-            return alloc(size.intValue());
+            return bindToScope(alloc(size.intValue(), (byte) 0x0), funObj.getParentScope());
         }
 
         throw new IllegalArgumentException("Unknown Buffer.alloc parameter compositon: "
                 + "(" + ConsoleAPI.stringifyAll(", ", arg0, arg1, arg2) + ")");
-    }
-
-    public static BufferHost alloc(int size) {
-        return alloc(size, (byte) 0x0);
     }
 
     public static BufferHost alloc(int size, byte fill) {
@@ -71,33 +71,33 @@ public class BufferHost extends HostObject {
         return host.fill(fill);
     }
 
-    public static BufferHost alloc(int size, String fill) {
-        return alloc(size, fill, "utf8");
-    }
-
     public static BufferHost alloc(int size, String fill, String encoding) {
         BufferHost host = new BufferHost();
         host.buffer = new byte[size];
         return host.fill(fill, encoding);
     }
 
-    @JSStaticFunction
-    public static BufferHost from(Object arg0, Object arg1) {
+    @JSStaticFunction("from")
+    public static BufferHost _from(Context cx, Scriptable thisObj, Object[] args, Function funObj) {
+        ArrayAccessor<Object> argsAccessor = ArrayAccessor.of(args);
+        Object arg0 = argsAccessor.get(0).orElse(null);
+        Object arg1 = argsAccessor.get(1).orElse(null);
+
         if (arg0 instanceof NativeArray array) {
-            return fromArray(array);
+            return bindToScope(from(array), funObj.getParentScope());
         }
         if (arg0 instanceof NativeArrayBuffer arrayBuffer) {
-            return fromArrayBuffer(arrayBuffer);
+            return bindToScope(from(arrayBuffer), funObj.getParentScope());
         }
         if (arg0 instanceof NativeArrayBufferView arrayBufferView) {
-            return fromArrayBuffer(arrayBufferView.getBuffer());
+            return bindToScope(from(arrayBufferView.getBuffer()), funObj.getParentScope());
         }
 
         throw new IllegalArgumentException("Unknown Buffer.from parameter compositon: "
                 + String.join(", ", Arrays.toString(new Object[]{arg0, arg1})));
     }
 
-    protected static BufferHost fromArray(NativeArray array) {
+    public static BufferHost from(NativeArray array) {
         BufferHost host = new BufferHost();
 
         byte[] buffer = new byte[array.size()];
@@ -116,31 +116,56 @@ public class BufferHost extends HostObject {
         return host;
     }
 
-    protected static BufferHost fromArrayBuffer(NativeArrayBuffer arrayBuffer) {
+    public static BufferHost from(NativeArrayBuffer arrayBuffer) {
         BufferHost host = new BufferHost();
         host.buffer = arrayBuffer.getBuffer();
         return host;
     }
 
     @JSFunction("fill")
-    public BufferHost _fill(Object arg0, Object arg1, Object arg2, Object arg3) {
-        if (arg1 == Undefined.instance) arg1 = 0;
-        if (arg2 == Undefined.instance) arg2 = buffer.length;
-        if (arg3 == Undefined.instance) arg3 = "ascii";
+    public BufferHost _fill(Context cx, Scriptable thisObj, Object[] args, Function funObj) {
+        ArrayAccessor<Object> argsAccessor = ArrayAccessor.of(args);
+        Object arg0 = argsAccessor.get(0).orElse(null);
+        Object arg1 = argsAccessor.get(1).orElse(null);
+        Object arg2 = argsAccessor.get(2).orElse(null);
+        Object arg3 = argsAccessor.get(3).orElse(null);
 
-        if (arg0 instanceof Number number) {
-//            for (int i = arg1; i < arg2; i++) {
-//                this.buffer[i] = number.byteValue();
-//            }
-//            return this;
+        if (arg0 instanceof Number value) {
+            if (arg1 instanceof Number offset) {
+                if (arg2 instanceof Number end) {
+                    // Buffer.alloc(5).fill(0xFF, 0, 5);
+                    return fill(value.byteValue(), offset.intValue(), end.intValue());
+                }
+
+                // Buffer.alloc(5).fill(0xFF, 0);
+                return fill(value.byteValue(), offset.intValue(), this.buffer.length);
+            }
+
+            // Buffer.alloc(5).fill(0xFF);
+            return fill(value.byteValue());
         }
 
-        if (arg0 instanceof String string) {
+        if (arg0 instanceof String value) {
+            if (arg1 instanceof Number offset) {
+                if (arg2 instanceof Number end) {
+                    if (arg3 instanceof String encoding) {
+                        return fill(value, offset.intValue(), end.intValue(), encoding);
+                    }
 
+                    // Buffer.alloc(5).fill("h", 0, 5);
+                    return fill(value, offset.intValue(), end.intValue(), "utf8");
+                }
+
+                // Buffer.alloc(5).fill(0xFF, 0);
+                return fill(value, offset.intValue(), this.buffer.length, "utf8");
+            }
+
+            // Buffer.alloc(5).fill(0xFF);
+            return fill(value, "utf8");
         }
 
         throw new IllegalArgumentException("Unknown Buffer::fill parameter composition: "
-                + String.join(", ", Arrays.toString(new Object[]{arg0, arg1, arg2, arg3})));
+                + "(" + ConsoleAPI.stringifyAll(", ", arg0, arg1, arg2, arg3) + ")");
     }
 
     public BufferHost fill(byte value) {
@@ -152,15 +177,13 @@ public class BufferHost extends HostObject {
         return this;
     }
 
-    public BufferHost fill(String value) {
-        return fill(value, "utf8");
-    }
-
     public BufferHost fill(String value, String encoding) {
         return fill(value, 0, this.buffer.length, encoding);
     }
 
     public BufferHost fill(String value, int offset, int end, String encoding) {
+        if (value.isEmpty()) return fill((byte) 0, offset, end);
+
         byte[] valueEncoded = Codec.encode(value, encoding);
 
         for (int i = offset; i < end; i++) {
