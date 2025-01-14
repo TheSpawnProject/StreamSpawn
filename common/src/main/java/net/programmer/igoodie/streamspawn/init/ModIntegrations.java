@@ -4,7 +4,6 @@ import net.programmer.igoodie.streamspawn.integration.base.Integration;
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
 import net.programmer.igoodie.streamspawn.javascript.base.ServiceObject;
 import net.programmer.igoodie.streamspawn.javascript.global.EmitFn;
-import net.programmer.igoodie.streamspawn.javascript.global.PrintFn;
 import net.programmer.igoodie.streamspawn.javascript.global.RegisterServiceFn;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.SpawnJS;
 import org.mozilla.javascript.Context;
@@ -21,10 +20,9 @@ public class ModIntegrations {
         ScriptableObject globalScope = SpawnJS.createGlobals();
 
         // TODO: Migrate those:
-        globalScope.defineProperty("print", new PrintFn(), ScriptableObject.CONST);
         globalScope.defineProperty("registerService", new RegisterServiceFn(INTEGRATION_REGISTRY), ScriptableObject.CONST);
         globalScope.defineProperty("emit", new EmitFn(), ScriptableObject.CONST);
-        globalScope.defineProperty("stopIntegration", new PrintFn(), ScriptableObject.CONST);
+        JavascriptEngine.eval(globalScope, "stopIntegration = console.log");
 
 
         try {

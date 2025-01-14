@@ -1,5 +1,6 @@
-/// <reference path="network/NetworkAPI.d.ts"/>
+/// <reference path="core/ConsoleAPI.d.ts"/>
 /// <reference path="core/TimerAPI.d.ts"/>
+/// <reference path="network/NetworkAPI.d.ts"/>
 
 declare const __version: string;
 
@@ -8,8 +9,6 @@ declare const integrationVersion: string;
 declare const integrationConfig: any;
 
 declare function stopIntegration(reason: string): void;
-
-declare function print(...args: any[]): void;
 
 declare class Bromise<T> extends Promise<T> {}
 

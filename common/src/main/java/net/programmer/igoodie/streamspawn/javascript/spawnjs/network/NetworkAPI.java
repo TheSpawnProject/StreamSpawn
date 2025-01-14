@@ -8,9 +8,10 @@ public class NetworkAPI extends RuntimeAPI {
 
     @Override
     public void init(ScriptableObject scope) {
-        ScriptableObject nsNetwork = JavascriptEngine.createScope();
-        JavascriptEngine.defineClass(nsNetwork, SocketIOHost.class);
-        scope.defineProperty("Network", nsNetwork, ScriptableObject.CONST);
+        ScriptableObject networkNs = JavascriptEngine.createScope(scope);
+        scope.defineProperty("Network", networkNs, ScriptableObject.CONST);
+
+        JavascriptEngine.defineClass(networkNs, SocketIOHost.class);
     }
 
 }
