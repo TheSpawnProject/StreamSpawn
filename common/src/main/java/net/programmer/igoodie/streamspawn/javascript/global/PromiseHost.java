@@ -22,13 +22,14 @@ public class PromiseHost extends HostObject {
 
     @Override
     public String getClassName() {
-        return "Bromise";
+        return "Promise";
     }
 
     public PromiseHost() {}
 
     @JSConstructor
     public PromiseHost(Function executor) {
+        System.out.println("Promise created");
         this.executor = executor;
         this.scope = executor.getParentScope();
 
@@ -138,7 +139,7 @@ public class PromiseHost extends HostObject {
         return this;
     }
 
-    enum PromiseState {
+    public enum PromiseState {
         PENDING,
         FULFILLED,
         REJECTED

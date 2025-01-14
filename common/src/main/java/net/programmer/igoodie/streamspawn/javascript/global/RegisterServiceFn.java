@@ -20,7 +20,7 @@ public class RegisterServiceFn extends BaseFunction {
     @Override
     public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
         if (args.length != 1) throw new IllegalArgumentException("Expected only one argument");
-        if (!(args[0] instanceof ServiceObject)) throw new IllegalArgumentException("Expected a Socket");
+        if (!(args[0] instanceof ServiceObject)) throw new IllegalArgumentException("Expected a Service");
 
         String integrationId = (String) scope.get("integrationId", scope);
         Integration integration = integrationRegistry.get(integrationId);

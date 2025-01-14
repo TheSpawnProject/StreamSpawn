@@ -40,11 +40,11 @@ dependencies {
     shadowBundle project(path: ':common', configuration: 'transformProductionForge')
 
     implementation 'com.github.TheSpawnProject:TheSpawnLanguage:v1.5.1-alpha3'
-    implementation 'org.mozilla:rhino:1.7.15'
+    implementation 'org.mozilla:rhino:1.8.0'
     implementation "io.socket:socket.io-client:1.0.0"
 
     forgeRuntimeLibrary 'com.github.TheSpawnProject:TheSpawnLanguage:v1.5.1-alpha3'
-    forgeRuntimeLibrary 'org.mozilla:rhino:1.7.15'
+    forgeRuntimeLibrary 'org.mozilla:rhino:1.8.0'
     forgeRuntimeLibrary "io.socket:socket.io-client:1.0.0"
 }
 

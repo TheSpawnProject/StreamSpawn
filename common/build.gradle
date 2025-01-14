@@ -16,6 +16,6 @@ dependencies {
     modImplementation "dev.architectury:architectury:$rootProject.architectury_api_version"
 
     implementation 'com.github.TheSpawnProject:TheSpawnLanguage:v1.5.1-alpha3'
-    implementation 'org.mozilla:rhino:1.7.15'
+    implementation 'org.mozilla:rhino:1.8.0'
     implementation "io.socket:socket.io-client:1.0.0"
 }

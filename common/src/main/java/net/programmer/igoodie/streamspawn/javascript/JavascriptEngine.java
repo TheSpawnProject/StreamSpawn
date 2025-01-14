@@ -13,8 +13,8 @@ public class JavascriptEngine {
 
     public static final ThreadLocal<Context> CONTEXT = ThreadLocal.withInitial(() -> {
         Context context = Context.enter();
-        context.setOptimizationLevel(-1);
-        context.setMaximumInterpreterStackDepth(255);
+//        context.setInterpretedMode(true);
+//        context.setMaximumInterpreterStackDepth(255);
         context.setLanguageVersion(Context.VERSION_ES6);
         Object lock = LOCK.get();
         context.seal(lock);

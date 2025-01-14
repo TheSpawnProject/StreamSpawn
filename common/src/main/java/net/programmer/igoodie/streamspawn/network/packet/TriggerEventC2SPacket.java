@@ -7,17 +7,17 @@ import net.programmer.igoodie.streamspawn.network.format.NbtGoodieFormat;
 
 import java.util.function.Supplier;
 
-public class ServerboundEventPacket extends PacketDefinition {
+public class TriggerEventC2SPacket extends PacketDefinition {
 
     public final String eventName;
     public final GoodieObject eventArgs;
 
-    public ServerboundEventPacket(FriendlyByteBuf buffer) {
+    public TriggerEventC2SPacket(FriendlyByteBuf buffer) {
         this.eventName = buffer.readUtf();
         this.eventArgs = NbtGoodieFormat.INSTANCE.writeToGoodie(buffer.readNbt());
     }
 
-    public ServerboundEventPacket(String eventName, GoodieObject eventArgs) {
+    public TriggerEventC2SPacket(String eventName, GoodieObject eventArgs) {
         this.eventName = eventName;
         this.eventArgs = eventArgs;
     }

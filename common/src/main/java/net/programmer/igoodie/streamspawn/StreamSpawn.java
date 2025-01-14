@@ -5,9 +5,9 @@ import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.common.LifecycleEvent;
 import net.minecraft.resources.ResourceLocation;
 import net.programmer.igoodie.goodies.runtime.GoodieObject;
-import net.programmer.igoodie.streamspawn.integration.ModIntegrations;
-import net.programmer.igoodie.streamspawn.network.ModNetwork;
-import net.programmer.igoodie.streamspawn.network.packet.ServerboundEventPacket;
+import net.programmer.igoodie.streamspawn.init.ModIntegrations;
+import net.programmer.igoodie.streamspawn.init.ModNetwork;
+import net.programmer.igoodie.streamspawn.network.packet.TriggerEventC2SPacket;
 
 public final class StreamSpawn {
 
@@ -33,7 +33,7 @@ public final class StreamSpawn {
             String eventName = "Testing";
             GoodieObject eventArgs = new GoodieObject();
             eventArgs.put("actor", "iGoodie");
-            ModNetwork.CHANNEL.sendToServer(new ServerboundEventPacket(eventName, eventArgs));
+            ModNetwork.CHANNEL.sendToServer(new TriggerEventC2SPacket(eventName, eventArgs));
         });
     }
 
