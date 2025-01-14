@@ -1,4 +1,4 @@
-/// <reference path="socketio.d.ts"/>
+/// <reference path="SocketIOHost.d.ts"/>
 
 declare namespace Network {
   export class SocketIO extends Service {

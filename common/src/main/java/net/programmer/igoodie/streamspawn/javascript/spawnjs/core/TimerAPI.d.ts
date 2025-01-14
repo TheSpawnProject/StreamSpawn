@@ -1,0 +1,1 @@
+declare function setTimeout(cb: () => void, delayMs: number): void;

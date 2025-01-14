@@ -1,4 +1,4 @@
-package net.programmer.igoodie.streamspawn.javascript.network;
+package net.programmer.igoodie.streamspawn.javascript.spawnjs.network;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;

@@ -1,4 +1,7 @@
-/// <reference path="network/network.d.ts"/>
+/// <reference path="network/NetworkAPI.d.ts"/>
+/// <reference path="core/TimerAPI.d.ts"/>
+
+declare const __version: string;
 
 declare const integrationId: string;
 declare const integrationVersion: string;
@@ -9,8 +12,6 @@ declare function stopIntegration(reason: string): void;
 declare function print(...args: any[]): void;
 
 declare class Bromise<T> extends Promise<T> {}
-
-declare function setTimeout(cb: () => void, delayMs: number): void;
 
 declare class Service {
   private type(): Symbol[];

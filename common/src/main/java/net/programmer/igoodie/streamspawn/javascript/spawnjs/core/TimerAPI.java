@@ -1,11 +1,12 @@
 package net.programmer.igoodie.streamspawn.javascript.spawnjs.core;
 
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
+import net.programmer.igoodie.streamspawn.javascript.base.RuntimeAPI;
 import org.mozilla.javascript.*;
 
 import java.util.*;
 
-public class TimerAPI {
+public class TimerAPI extends RuntimeAPI {
 
     public void init(ScriptableObject scope) {
         scope.defineProperty("setTimeout", new SetTimeout(), ScriptableObject.CONST);
