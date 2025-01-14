@@ -123,45 +123,47 @@ public class BufferHost extends HostObject {
     }
 
     @JSFunction("fill")
-    public BufferHost _fill(Context cx, Scriptable thisObj, Object[] args, Function funObj) {
+    public static BufferHost _fill(Context cx, Scriptable thisObj, Object[] args, Function funObj) {
         ArrayAccessor<Object> argsAccessor = ArrayAccessor.of(args);
         Object arg0 = argsAccessor.get(0).orElse(null);
         Object arg1 = argsAccessor.get(1).orElse(null);
         Object arg2 = argsAccessor.get(2).orElse(null);
         Object arg3 = argsAccessor.get(3).orElse(null);
 
+        BufferHost bufferHost = (BufferHost) thisObj;
+
         if (arg0 instanceof Number value) {
             if (arg1 instanceof Number offset) {
                 if (arg2 instanceof Number end) {
                     // Buffer.alloc(5).fill(0xFF, 0, 5);
-                    return fill(value.byteValue(), offset.intValue(), end.intValue());
+                    return bufferHost.fill(value.byteValue(), offset.intValue(), end.intValue());
                 }
 
                 // Buffer.alloc(5).fill(0xFF, 0);
-                return fill(value.byteValue(), offset.intValue(), this.buffer.length);
+                return bufferHost.fill(value.byteValue(), offset.intValue(), bufferHost.buffer.length);
             }
 
             // Buffer.alloc(5).fill(0xFF);
-            return fill(value.byteValue());
+            return bufferHost.fill(value.byteValue());
         }
 
         if (arg0 instanceof String value) {
             if (arg1 instanceof Number offset) {
                 if (arg2 instanceof Number end) {
                     if (arg3 instanceof String encoding) {
-                        return fill(value, offset.intValue(), end.intValue(), encoding);
+                        return bufferHost.fill(value, offset.intValue(), end.intValue(), encoding);
                     }
 
                     // Buffer.alloc(5).fill("h", 0, 5);
-                    return fill(value, offset.intValue(), end.intValue(), "utf8");
+                    return bufferHost.fill(value, offset.intValue(), end.intValue(), "utf8");
                 }
 
                 // Buffer.alloc(5).fill(0xFF, 0);
-                return fill(value, offset.intValue(), this.buffer.length, "utf8");
+                return bufferHost.fill(value, offset.intValue(), bufferHost.buffer.length, "utf8");
             }
 
             // Buffer.alloc(5).fill(0xFF);
-            return fill(value, "utf8");
+            return bufferHost.fill(value, "utf8");
         }
 
         throw new IllegalArgumentException("Unknown Buffer::fill parameter composition: "
