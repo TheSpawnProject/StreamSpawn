@@ -57,6 +57,7 @@ public class Integration {
 
     public void loadScript(String source) {
         Context cx = JavascriptEngine.CONTEXT.get();
+        // TODO: Wrap with ModuleScript
         this.script = cx.compileString(source, "<anonymous>", 1, null);
     }
 

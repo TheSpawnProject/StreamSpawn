@@ -51,9 +51,21 @@ public class ModIntegrations {
                     require("util2");
                     const { PI } = require("util2");
                     console.log("Pi from util2 =", PI);
+                    console.log();
                     
-                    const { Buffer, Network: { TcpClient } } = require("spawnjs:network");
-                    console.log(Buffer, TcpClient);
+                    const { WebsocketClient } = require("./websocket.js");
+                    var ws = new WebsocketClient("127.0.0.1", 8080);
+                    console.log(ws.tcp.underlyingSocket);
+                    console.log(ws.name);
+                    console.log();
+                    
+                    const { Network: { TcpClient } } = require("spawnjs:network");
+                    console.log(new TcpClient("127.0.0.1", 8080).underlyingSocket);
+                    console.log();
+                    
+                    require("./util2.js");
+                    require("./util2.js");
+                    
                     """);
             INTEGRATION_REGISTRY.put(integration.getName(), integration);
             ScriptableObject integrationScope = integration.createScope(globalScope);

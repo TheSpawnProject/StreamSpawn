@@ -39,11 +39,27 @@ public class TcpClientHost extends ServiceObject {
 
     public TcpClientHost() {}
 
-    @JSConstructor
     public TcpClientHost(String host, int port) {
         this.host = host;
         this.port = port;
         this.socket = new Socket();
+    }
+
+    @JSConstructor
+    public static TcpClientHost constructor(Context cx, Object[] args, Function ctor, boolean inNewExpr) {
+        ArrayAccessor<Object> argsAccessor = ArrayAccessor.of(args);
+        Object arg0 = argsAccessor.get(0).orElse(null);
+        Object arg1 = argsAccessor.get(1).orElse(null);
+
+        Scriptable scope = ctor.getParentScope();
+
+        if (arg0 instanceof String host) {
+            if (arg1 instanceof Integer port) {
+                return bindToScope(new TcpClientHost(host, port), scope);
+            }
+        }
+
+        throw createInvalidArgumentsException(new TcpClientHost(), args, ctor);
     }
 
     @Override

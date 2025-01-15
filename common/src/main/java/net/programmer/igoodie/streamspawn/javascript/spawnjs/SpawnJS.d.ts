@@ -1,5 +1,5 @@
-/// <reference path="core/ConsoleAPI.d.ts"/>
-/// <reference path="core/TimerAPI.d.ts"/>
+/// <reference path="globals/ConsoleAPI.d.ts"/>
+/// <reference path="globals/TimerAPI.d.ts"/>
 /// <reference path="network/NetworkAPI.d.ts"/>
 
 declare const __version: string;

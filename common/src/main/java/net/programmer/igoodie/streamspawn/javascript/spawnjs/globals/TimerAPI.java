@@ -1,4 +1,4 @@
-package net.programmer.igoodie.streamspawn.javascript.spawnjs.core;
+package net.programmer.igoodie.streamspawn.javascript.spawnjs.globals;
 
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
 import net.programmer.igoodie.streamspawn.javascript.base.RuntimeAPI;

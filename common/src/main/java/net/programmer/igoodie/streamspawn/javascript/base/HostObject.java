@@ -1,6 +1,6 @@
 package net.programmer.igoodie.streamspawn.javascript.base;
 
-import net.programmer.igoodie.streamspawn.javascript.spawnjs.core.ConsoleAPI;
+import net.programmer.igoodie.streamspawn.javascript.spawnjs.globals.ConsoleAPI;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
