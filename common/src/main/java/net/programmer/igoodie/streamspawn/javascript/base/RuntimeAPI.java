@@ -2,8 +2,8 @@ package net.programmer.igoodie.streamspawn.javascript.base;
 
 import org.mozilla.javascript.ScriptableObject;
 
-public abstract class RuntimeAPI {
+public interface RuntimeAPI {
 
-    public abstract void init(ScriptableObject scope);
+    void install(ScriptableObject scope);
 
 }

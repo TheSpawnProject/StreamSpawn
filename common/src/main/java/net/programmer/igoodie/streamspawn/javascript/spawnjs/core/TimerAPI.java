@@ -6,9 +6,9 @@ import org.mozilla.javascript.*;
 
 import java.util.*;
 
-public class TimerAPI extends RuntimeAPI {
+public class TimerAPI implements RuntimeAPI {
 
-    public void init(ScriptableObject scope) {
+    public void install(ScriptableObject scope) {
         scope.defineProperty("setTimeout", new SetTimeout(), ScriptableObject.CONST);
         scope.defineProperty("setInterval", new SetInterval(), ScriptableObject.CONST);
         scope.defineProperty("clearTimeout", new ClearTask(), ScriptableObject.CONST);
@@ -37,8 +37,8 @@ public class TimerAPI extends RuntimeAPI {
 
         @Override
         public void run() {
-            Context context = JavascriptEngine.CONTEXT.get();
-            function.call(context, scope, thisObj, new Object[0]);
+            Context cx = JavascriptEngine.CONTEXT.get();
+            function.call(cx, scope, thisObj, new Object[0]);
             if (!this.isPeriodic) tasks.remove(taskId);
         }
 

@@ -43,22 +43,17 @@ public class ModIntegrations {
 //                    "   .then(res => { throw new Error('Wopsie') })" +
 //                    "   .catch(err => print('Omg an error', err.getValue()));");
             integration.loadScript("""
-                    const tcpClient = new Network.TcpClient("google.com", 80);
+                    //const utilModule = require("util");
+                    //console.log(utilModule);
                     
-                    tcpClient.underlyingSocket.setSoTimeout(1000);
+                    require("util");
+                    require("util");
+                    require("util2");
+                    const { PI } = require("util2");
+                    console.log("Pi from util2 =", PI);
                     
-                    tcpClient.buffer = Buffer.alloc(1024);
-                    
-                    tcpClient.on("lookup", (err, addressType, resolvedAddress, hostname) => {
-                      console.log(err, addressType, resolvedAddress, hostname);
-                    });
-                    
-                    tcpClient.on("connect", () => {
-                      console.log("Connected!");
-                    });
-                    
-                    registerService(tcpClient);
-                    
+                    const { Buffer, Network: { TcpClient } } = require("spawnjs:network");
+                    console.log(Buffer, TcpClient);
                     """);
             INTEGRATION_REGISTRY.put(integration.getName(), integration);
             ScriptableObject integrationScope = integration.createScope(globalScope);

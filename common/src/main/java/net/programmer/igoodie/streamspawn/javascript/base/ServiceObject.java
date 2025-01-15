@@ -23,11 +23,11 @@ public abstract class ServiceObject extends HostObject {
         Scriptable scope = this.getParentScope();
 
         return (args) -> {
-            Context context = JavascriptEngine.CONTEXT.get();
+            Context cx = JavascriptEngine.CONTEXT.get();
             Object[] coercedArgs = Arrays.stream(args)
                     .map(JavascriptCoercer::coerce)
                     .toArray();
-            callback.call(context, scope, null, coercedArgs);
+            callback.call(cx, scope, null, coercedArgs);
         };
     }
 

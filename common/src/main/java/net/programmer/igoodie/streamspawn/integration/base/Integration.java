@@ -56,8 +56,8 @@ public class Integration {
     }
 
     public void loadScript(String source) {
-        Context context = JavascriptEngine.CONTEXT.get();
-        this.script = context.compileString(source, name + ".integration.js", 1, null);
+        Context cx = JavascriptEngine.CONTEXT.get();
+        this.script = cx.compileString(source, "<anonymous>", 1, null);
     }
 
 }

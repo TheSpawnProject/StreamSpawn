@@ -7,10 +7,10 @@ import org.mozilla.javascript.*;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class ConsoleAPI extends RuntimeAPI {
+public class ConsoleAPI implements RuntimeAPI {
 
     @Override
-    public void init(ScriptableObject scope) {
+    public void install(ScriptableObject scope) {
         ScriptableObject consoleObj = JavascriptEngine.createScope(scope);
         scope.defineProperty("console", consoleObj, ScriptableObject.CONST);
 

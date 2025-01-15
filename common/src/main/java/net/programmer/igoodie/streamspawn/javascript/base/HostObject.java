@@ -23,6 +23,7 @@ public abstract class HostObject extends ScriptableObject {
             }
         }
 
+        // TODO: Replace with ScriptRuntime.throwError
         return new IllegalArgumentException("Invalid arguments provided to " + calleeName
                 + " -> (" + ConsoleAPI.stringifyAll(", ", args) + ")");
     }

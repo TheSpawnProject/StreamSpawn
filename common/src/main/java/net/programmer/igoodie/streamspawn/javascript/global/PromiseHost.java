@@ -33,9 +33,9 @@ public class PromiseHost extends HostObject {
         this.executor = executor;
         this.scope = executor.getParentScope();
 
-        Context context = JavascriptEngine.CONTEXT.get();
+        Context cx = JavascriptEngine.CONTEXT.get();
         Object[] args = {new Resolve(), new Reject()};
-        executor.call(context, scope, null, args);
+        executor.call(cx, scope, null, args);
     }
 
     public class Resolve extends BaseFunction {
@@ -67,9 +67,9 @@ public class PromiseHost extends HostObject {
             while (!fulfillQueue.isEmpty()) {
                 try {
                     Function onFulfilled = fulfillQueue.poll();
-                    Context context = JavascriptEngine.CONTEXT.get();
+                    Context cx = JavascriptEngine.CONTEXT.get();
                     Object[] args = {this.result};
-                    this.result = onFulfilled.call(context, scope, null, args);
+                    this.result = onFulfilled.call(cx, scope, null, args);
 
                     if (this.result instanceof PromiseHost) {
                         PromiseHost resultPromise = (PromiseHost) this.result;
@@ -98,9 +98,9 @@ public class PromiseHost extends HostObject {
             while (!rejectQueue.isEmpty()) {
                 try {
                     Function onRejected = rejectQueue.poll();
-                    Context context = JavascriptEngine.CONTEXT.get();
+                    Context cx = JavascriptEngine.CONTEXT.get();
                     Object[] args = {this.result};
-                    this.result = onRejected.call(context, scope, null, args);
+                    this.result = onRejected.call(cx, scope, null, args);
 
                     if (this.result instanceof PromiseHost) {
                         PromiseHost resultPromise = (PromiseHost) this.result;

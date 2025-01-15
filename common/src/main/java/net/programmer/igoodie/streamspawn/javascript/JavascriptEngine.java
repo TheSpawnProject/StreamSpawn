@@ -4,7 +4,6 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.function.Function;
 
 public class JavascriptEngine {
@@ -12,26 +11,26 @@ public class JavascriptEngine {
     private static final ThreadLocal<Object> LOCK = ThreadLocal.withInitial(Object::new);
 
     public static final ThreadLocal<Context> CONTEXT = ThreadLocal.withInitial(() -> {
-        Context context = Context.enter();
-//        context.setInterpretedMode(true);
-//        context.setMaximumInterpreterStackDepth(255);
-        context.setLanguageVersion(Context.VERSION_ES6);
+        Context cx = Context.enter();
+//        cx.setInterpretedMode(true);
+//        cx.setMaximumInterpreterStackDepth(255);
+        cx.setLanguageVersion(Context.VERSION_ES6);
         Object lock = LOCK.get();
-        context.seal(lock);
-        return context;
+        cx.seal(lock);
+        return cx;
     });
 
     private static <V> V unsafe_useContext(Function<Context, V> consumer) {
-        Context context = CONTEXT.get();
+        Context cx = CONTEXT.get();
 
-        if (!context.isSealed()) {
-            return consumer.apply(context);
+        if (!cx.isSealed()) {
+            return consumer.apply(cx);
         }
 
         Object lock = LOCK.get();
-        context.unseal(lock);
-        V result = consumer.apply(context);
-        context.seal(lock);
+        cx.unseal(lock);
+        V result = consumer.apply(cx);
+        cx.seal(lock);
 
         return result;
     }
@@ -41,8 +40,8 @@ public class JavascriptEngine {
     }
 
     public static ScriptableObject createScope(Scriptable parentScope) {
-        return unsafe_useContext(context -> {
-            ScriptableObject scope = context.initSafeStandardObjects();
+        return unsafe_useContext(cx -> {
+            ScriptableObject scope = cx.initSafeStandardObjects();
             if (parentScope != null) scope.setParentScope(parentScope);
             return scope;
         });
@@ -51,7 +50,7 @@ public class JavascriptEngine {
     public static <T extends Scriptable> void defineClass(Scriptable scope, Class<T> clazz) {
         try {
             ScriptableObject.defineClass(scope, clazz);
-        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

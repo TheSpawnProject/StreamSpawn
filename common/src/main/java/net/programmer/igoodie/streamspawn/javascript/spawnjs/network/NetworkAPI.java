@@ -7,17 +7,16 @@ import net.programmer.igoodie.streamspawn.javascript.spawnjs.network.hosts.Socke
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.network.hosts.TcpClientHost;
 import org.mozilla.javascript.ScriptableObject;
 
-public class NetworkAPI extends RuntimeAPI {
+public class NetworkAPI implements RuntimeAPI {
 
     @Override
-    public void init(ScriptableObject scope) {
+    public void install(ScriptableObject scope) {
         JavascriptEngine.defineClass(scope, BufferHost.class);
 
         ScriptableObject networkNs = JavascriptEngine.createScope(scope);
-        scope.defineProperty("Network", networkNs, ScriptableObject.CONST);
-
         JavascriptEngine.defineClass(networkNs, SocketIOHost.class);
         JavascriptEngine.defineClass(networkNs, TcpClientHost.class);
+        scope.defineProperty("Network", networkNs, ScriptableObject.CONST);
     }
 
 }

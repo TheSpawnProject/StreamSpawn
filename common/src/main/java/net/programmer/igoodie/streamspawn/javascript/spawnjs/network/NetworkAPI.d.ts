@@ -1,6 +1,6 @@
 /// <reference path="./hosts/SocketIOHost.d.ts"/>
 
-declare namespace Network {
+declare module "spawnjs:network" {
   export class SocketIO extends Service {
     constructor(url: string);
 
@@ -14,7 +14,7 @@ declare namespace Network {
   export class TcpClient extends Service {
     constructor(host: string, port: number);
 
-    get underlyingSocket(): Tcp.Socket;
+    get underlyingSocket(): NativeTcp.Socket;
     get buffer(): Buffer;
     set buffer(buffer: Buffer);
 
@@ -22,12 +22,13 @@ declare namespace Network {
       event: "lookup",
       listener: (
         error: undefined | string,
-        addressType: "ipv4",
+        addressType: 4 | 6,
         resolvedAddress: string,
         hostname: string
       ) => void
     ): void;
     on(event: "connect", listener: () => void): void;
+    on(event: "error", listener: (err: string) => void): void;
   }
 }
 

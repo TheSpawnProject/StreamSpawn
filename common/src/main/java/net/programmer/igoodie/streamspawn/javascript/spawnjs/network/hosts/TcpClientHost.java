@@ -5,7 +5,6 @@ import net.programmer.igoodie.streamspawn.javascript.base.ServiceObject;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.annotations.JSConstructor;
 import org.mozilla.javascript.annotations.JSFunction;
 import org.mozilla.javascript.annotations.JSGetter;
@@ -98,10 +97,8 @@ public class TcpClientHost extends ServiceObject {
     @Override
     public void begin() {
         executor.submit(() -> {
-            InetSocketAddress socketAddress;
-
             try {
-                socketAddress = new InetSocketAddress(this.host, this.port);
+                InetSocketAddress socketAddress = new InetSocketAddress(this.host, this.port);
 
                 if (socketAddress.isUnresolved()) {
                     throw new RuntimeException("Failed to resolve given address...");
@@ -113,23 +110,15 @@ public class TcpClientHost extends ServiceObject {
                         : -1;
 
                 this.getListeners(Event.LOOKUP).forEach(listener ->
-                        listener.call(
-                                Undefined.instance,
-                                type,
-                                netAddress.getHostAddress(),
-                                this.host)
-                );
+                        listener.call(type, netAddress.getHostAddress(), this.host));
 
-            } catch (Exception e) {
-                this.getListeners(Event.LOOKUP).forEach(listener
-                        -> listener.call(e.getMessage()));
-                return;
-            }
-
-            try {
                 socket.connect(socketAddress);
                 inputStream = socket.getInputStream();
                 outputStream = socket.getOutputStream();
+
+                // TODO: Read inputStream
+                // TODO: Dispatch Event.DATA
+                // TODO: Dispatch Event.DRAIN
 
 //                if (this.connectListener != null) {
 //                    this.connectListener.call();
@@ -149,10 +138,10 @@ public class TcpClientHost extends ServiceObject {
 //                    }
 //                }
 
-            } catch (IOException e) {
-//                if (this.errorListener != null) {
-//                    this.errorListener.call(e.toString());
-//                }
+            } catch (Exception e) {
+                // TODO: Dispatch Event.TIMEOUT
+                this.getListeners(Event.ERROR).forEach(listener ->
+                        listener.call(e.getMessage()));
             }
         });
     }

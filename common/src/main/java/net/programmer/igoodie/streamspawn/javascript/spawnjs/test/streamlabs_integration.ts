@@ -1,4 +1,6 @@
-const sio = new Network.SocketIO("https://sockets.streamlabs.com");
+import { SocketIO } from "spawnjs:network";
+
+const sio = new SocketIO("https://sockets.streamlabs.com");
 
 const x = 5;
 
