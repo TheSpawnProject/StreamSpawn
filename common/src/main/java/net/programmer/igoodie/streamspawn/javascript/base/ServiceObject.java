@@ -20,7 +20,7 @@ public abstract class ServiceObject extends HostObject {
     }
 
     protected Listener bindListener(Function callback) {
-        Scriptable scope = getParentScope();
+        Scriptable scope = this.getParentScope();
 
         return (args) -> {
             Context context = JavascriptEngine.CONTEXT.get();

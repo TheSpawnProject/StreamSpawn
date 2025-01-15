@@ -1,19 +1,26 @@
 package net.programmer.igoodie.streamspawn.javascript.spawnjs.network.hosts;
 
+import net.programmer.igoodie.goodies.util.accessor.ArrayAccessor;
 import net.programmer.igoodie.streamspawn.javascript.base.ServiceObject;
+import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.annotations.JSConstructor;
+import org.mozilla.javascript.annotations.JSFunction;
 import org.mozilla.javascript.annotations.JSGetter;
 import org.mozilla.javascript.annotations.JSSetter;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -27,7 +34,11 @@ public class TcpClientHost extends ServiceObject {
     protected OutputStream outputStream;
     protected BufferHost buffer;
 
+    protected Map<Event, List<Listener>> listeners = new HashMap<>();
+
     protected final ExecutorService executor = Executors.newCachedThreadPool();
+
+    public TcpClientHost() {}
 
     @JSConstructor
     public TcpClientHost(String host, int port) {
@@ -41,34 +52,88 @@ public class TcpClientHost extends ServiceObject {
         return "TcpClient";
     }
 
-    public TcpClientHost() {}
+    public List<Listener> getListeners(Event event) {
+        return this.listeners.computeIfAbsent(event, k -> new ArrayList<>());
+    }
 
     @JSGetter
-    public Socket getSocket() {
+    public Socket getUnderlyingSocket() {
         return this.socket;
     }
 
-//    @JSGetter
-//    public int getBufferSize() {
-//        return this.bufferSize;
-//    }
-//
-//    @JSSetter
-//    public void setBufferSize(int bufferSize) {
-//        this.bufferSize = bufferSize;
-//    }
+    @JSGetter
+    public BufferHost getBuffer() {
+        return this.buffer;
+    }
+
+    @JSSetter
+    public void setBuffer(BufferHost buffer) {
+        this.buffer = buffer;
+    }
+
+    @JSFunction
+    public static void on(Context cx, Scriptable thisObj, Object[] args, Function function) {
+        ArrayAccessor<Object> argsAccessor = ArrayAccessor.of(args);
+        Object arg0 = argsAccessor.get(0).orElse(null);
+        Object arg1 = argsAccessor.get(1).orElse(null);
+
+        TcpClientHost hostObj = (TcpClientHost) thisObj;
+
+        if (arg0 instanceof String eventName) {
+            if (arg1 instanceof Function listener) {
+                try {
+                    Event event = Event.valueOf(eventName.toUpperCase());
+                    Listener eventListener = hostObj.bindListener(listener);
+                    hostObj.getListeners(event).add(eventListener);
+                    return;
+                } catch (Exception ignored) {
+                    throw new IllegalArgumentException("Invalid event name: " + eventName);
+                }
+            }
+        }
+
+        throw createInvalidArgumentsException(thisObj, args, function);
+    }
 
     @Override
     public void begin() {
         executor.submit(() -> {
+            InetSocketAddress socketAddress;
+
             try {
-                socket.connect(new InetSocketAddress(this.host, this.port));
+                socketAddress = new InetSocketAddress(this.host, this.port);
+
+                if (socketAddress.isUnresolved()) {
+                    throw new RuntimeException("Failed to resolve given address...");
+                }
+
+                InetAddress netAddress = socketAddress.getAddress();
+                int type = netAddress instanceof Inet4Address ? 4
+                        : netAddress instanceof Inet6Address ? 6
+                        : -1;
+
+                this.getListeners(Event.LOOKUP).forEach(listener ->
+                        listener.call(
+                                Undefined.instance,
+                                type,
+                                netAddress.getHostAddress(),
+                                this.host)
+                );
+
+            } catch (Exception e) {
+                this.getListeners(Event.LOOKUP).forEach(listener
+                        -> listener.call(e.getMessage()));
+                return;
+            }
+
+            try {
+                socket.connect(socketAddress);
                 inputStream = socket.getInputStream();
                 outputStream = socket.getOutputStream();
 
-                if (this.connectListener != null) {
-                    this.connectListener.call();
-                }
+//                if (this.connectListener != null) {
+//                    this.connectListener.call();
+//                }
 
 
 //                NativeUint8Array arr = new NativeUint8Array();
@@ -85,9 +150,9 @@ public class TcpClientHost extends ServiceObject {
 //                }
 
             } catch (IOException e) {
-                if (this.errorListener != null) {
-                    this.errorListener.call(e.toString());
-                }
+//                if (this.errorListener != null) {
+//                    this.errorListener.call(e.toString());
+//                }
             }
         });
     }
@@ -104,40 +169,15 @@ public class TcpClientHost extends ServiceObject {
         }
     }
 
-    /* --------------------------- */
-
-    protected ServiceObject.Listener connectListener;
-    protected ServiceObject.Listener errorListener;
-    protected ServiceObject.Listener chunkListener;
-
-    @JSGetter
-    public ServiceObject.Listener getOnConnect() {
-        return this.connectListener;
-    }
-
-    @JSGetter
-    public ServiceObject.Listener getOnError() {
-        return this.errorListener;
-    }
-
-    @JSGetter
-    public ServiceObject.Listener getOnChunk() {
-        return this.chunkListener;
-    }
-
-    @JSSetter
-    public void setOnConnect(Function listener) {
-        this.connectListener = bindListener(listener);
-    }
-
-    @JSSetter
-    public void setOnError(Function listener) {
-        this.errorListener = bindListener(listener);
-    }
-
-    @JSSetter
-    public void setOnChunk(Function listener) {
-        this.chunkListener = bindListener(listener);
+    public enum Event {
+        CONNECT,
+        DATA,
+        DRAIN,
+        END,
+        ERROR,
+        LOOKUP,
+        READY,
+        TIMEOUT
     }
 
 }

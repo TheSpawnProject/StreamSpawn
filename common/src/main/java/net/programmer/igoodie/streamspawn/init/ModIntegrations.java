@@ -43,16 +43,21 @@ public class ModIntegrations {
 //                    "   .then(res => { throw new Error('Wopsie') })" +
 //                    "   .catch(err => print('Omg an error', err.getValue()));");
             integration.loadScript("""
-                    console.log(new Buffer([0x1, 0x2, 0x3]));
-                    console.log(Buffer.alloc(11, "aGVsbG8gd29ybGQ=", "base64"));
-                    console.log(Buffer.alloc(9));
-                    console.log(Buffer.alloc(5, 1700));
-                    console.log(Buffer.alloc(5, "a"));
-                    console.log(Buffer.alloc(5, 0xff));
+                    const tcpClient = new Network.TcpClient("google.com", 80);
                     
-                    console.log("---");
+                    tcpClient.underlyingSocket.setSoTimeout(1000);
                     
-                    console.log(Buffer.alloc(6).fill(0xff).fill(0xab));
+                    tcpClient.buffer = Buffer.alloc(1024);
+                    
+                    tcpClient.on("lookup", (err, addressType, resolvedAddress, hostname) => {
+                      console.log(err, addressType, resolvedAddress, hostname);
+                    });
+                    
+                    tcpClient.on("connect", () => {
+                      console.log("Connected!");
+                    });
+                    
+                    registerService(tcpClient);
                     
                     """);
             INTEGRATION_REGISTRY.put(integration.getName(), integration);

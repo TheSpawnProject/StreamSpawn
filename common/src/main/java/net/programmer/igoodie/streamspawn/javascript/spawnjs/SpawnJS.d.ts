@@ -8,6 +8,10 @@ declare const integrationId: string;
 declare const integrationVersion: string;
 declare const integrationConfig: any;
 
+declare interface JavaBackedObject {
+  [field: string]: any;
+}
+
 declare function stopIntegration(reason: string): void;
 
 declare class Bromise<T> extends Promise<T> {}

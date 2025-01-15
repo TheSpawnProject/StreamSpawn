@@ -14,13 +14,20 @@ declare namespace Network {
   export class TcpClient extends Service {
     constructor(host: string, port: number);
 
-    get socket(): Tcp.Socket;
-    get bufferSize(): number;
-    set bufferSize(sizeInBytes: number);
+    get underlyingSocket(): Tcp.Socket;
+    get buffer(): Buffer;
+    set buffer(buffer: Buffer);
 
-    set onConnect(listener: () => void);
-    set onError(listener: (reason: string) => void);
-    set onChunk(listener: (buffer: number[], readLength: number) => void);
+    on(
+      event: "lookup",
+      listener: (
+        error: undefined | string,
+        addressType: "ipv4",
+        resolvedAddress: string,
+        hostname: string
+      ) => void
+    ): void;
+    on(event: "connect", listener: () => void): void;
   }
 }
 
@@ -51,7 +58,11 @@ declare class Buffer {
   ): Buffer;
 
   public static from(arrayBuffer: ArrayBufferLike): Buffer;
-  public static from(arrayBuffer: ArrayBuffer): Buffer;
+  public static from(
+    arrayBuffer: ArrayBuffer,
+    offset?: number,
+    end?: number
+  ): Buffer;
   public static from(array: (string | number)[]): Buffer;
 
   public fill(
