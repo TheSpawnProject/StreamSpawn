@@ -18,13 +18,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CjsAPI implements RuntimeAPI {
 
-    protected Map<String, ScriptableObject> loadedApis = new ConcurrentHashMap<>();
-    protected Map<String, RuntimeAPI> apiLookup = new ConcurrentHashMap<>();
+    protected Map<String, IntrinsicModule> intrinsicModules = new ConcurrentHashMap<>();
 
     public CjsAPI() {}
 
-    public CjsAPI withBuildInAPI(String moduleId, RuntimeAPI api) {
-        this.apiLookup.put(moduleId, api);
+    public CjsAPI withIntrinsicModule(IntrinsicModule intrinsicModule) {
+        this.intrinsicModules.put(intrinsicModule.moduleName(), intrinsicModule);
         return this;
     }
 

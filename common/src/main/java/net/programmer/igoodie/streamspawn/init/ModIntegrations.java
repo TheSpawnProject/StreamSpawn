@@ -59,13 +59,13 @@ public class ModIntegrations {
                     console.log(ws.name);
                     console.log();
                     
-                    const { Network: { TcpClient } } = require("spawnjs:network");
-                    console.log(new TcpClient("127.0.0.1", 8080).underlyingSocket);
+                    const { TcpConnection } = require("spawnjs:network");
+                    console.log(new TcpConnection("127.0.0.1", 8080).underlyingSocket);
                     console.log();
                     
                     require("./util2.js");
                     require("./util2.js");
-                    
+                    console.log();
                     """);
             INTEGRATION_REGISTRY.put(integration.getName(), integration);
             ScriptableObject integrationScope = integration.createScope(globalScope);

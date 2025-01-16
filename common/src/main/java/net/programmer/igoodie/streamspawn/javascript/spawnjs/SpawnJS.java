@@ -5,7 +5,7 @@ import net.programmer.igoodie.streamspawn.javascript.base.RuntimeAPI;
 import net.programmer.igoodie.streamspawn.javascript.commonjs.CjsAPI;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.globals.ConsoleAPI;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.globals.TimerAPI;
-import net.programmer.igoodie.streamspawn.javascript.spawnjs.network.NetworkAPI;
+import net.programmer.igoodie.streamspawn.javascript.spawnjs.network.NetworkModule;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.commonjs.module.ModuleScope;
 
@@ -17,7 +17,7 @@ public class SpawnJS implements RuntimeAPI {
     @Override
     public void install(ScriptableObject scope) {
         CjsAPI cjs = new CjsAPI()
-                .withBuildInAPI("spawnjs:network", new NetworkAPI());
+                .withIntrinsicModule(new NetworkModule());
 
         cjs.install(scope);
 

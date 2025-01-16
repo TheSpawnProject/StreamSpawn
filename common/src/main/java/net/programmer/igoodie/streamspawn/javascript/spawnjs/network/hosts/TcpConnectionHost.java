@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class TcpClientHost extends ServiceObject {
+public class TcpConnectionHost extends ServiceObject {
 
     protected String host;
     protected int port;
@@ -37,16 +37,16 @@ public class TcpClientHost extends ServiceObject {
 
     protected final ExecutorService executor = Executors.newCachedThreadPool();
 
-    public TcpClientHost() {}
+    public TcpConnectionHost() {}
 
-    public TcpClientHost(String host, int port) {
+    public TcpConnectionHost(String host, int port) {
         this.host = host;
         this.port = port;
         this.socket = new Socket();
     }
 
     @JSConstructor
-    public static TcpClientHost constructor(Context cx, Object[] args, Function ctor, boolean inNewExpr) {
+    public static TcpConnectionHost constructor(Context cx, Object[] args, Function ctor, boolean inNewExpr) {
         ArrayAccessor<Object> argsAccessor = ArrayAccessor.of(args);
         Object arg0 = argsAccessor.get(0).orElse(null);
         Object arg1 = argsAccessor.get(1).orElse(null);
@@ -55,16 +55,16 @@ public class TcpClientHost extends ServiceObject {
 
         if (arg0 instanceof String host) {
             if (arg1 instanceof Integer port) {
-                return bindToScope(new TcpClientHost(host, port), scope);
+                return bindToScope(new TcpConnectionHost(host, port), scope);
             }
         }
 
-        throw createInvalidArgumentsException(new TcpClientHost(), args, ctor);
+        throw createInvalidArgumentsException(new TcpConnectionHost(), args, ctor);
     }
 
     @Override
     public String getClassName() {
-        return "TcpClient";
+        return "TcpConnection";
     }
 
     public List<Listener> getListeners(Event event) {
@@ -92,7 +92,7 @@ public class TcpClientHost extends ServiceObject {
         Object arg0 = argsAccessor.get(0).orElse(null);
         Object arg1 = argsAccessor.get(1).orElse(null);
 
-        TcpClientHost hostObj = (TcpClientHost) thisObj;
+        TcpConnectionHost hostObj = (TcpConnectionHost) thisObj;
 
         if (arg0 instanceof String eventName) {
             if (arg1 instanceof Function listener) {

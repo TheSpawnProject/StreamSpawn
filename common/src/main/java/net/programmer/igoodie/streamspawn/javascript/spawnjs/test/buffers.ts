@@ -1,3 +1,5 @@
+import { Buffer } from "spawnjs:network";
+
 console.log(new Buffer([0x1, 0x2, 0x3]));
 console.log(Buffer.alloc(11, "aGVsbG8gd29ybGQ=", "base64"));
 console.log(Buffer.alloc(9));

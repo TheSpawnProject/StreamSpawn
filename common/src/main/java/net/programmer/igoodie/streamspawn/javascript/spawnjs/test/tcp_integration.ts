@@ -1,6 +1,6 @@
-import { TcpClient } from "spawnjs:network";
+import { TcpConnection, Buffer } from "spawnjs:network";
 
-const tcpClient = new TcpClient("127.0.0.1", 8080);
+const tcpClient = new TcpConnection("127.0.0.1", 8080);
 
 tcpClient.underlyingSocket.setSoTimeout(1000);
 

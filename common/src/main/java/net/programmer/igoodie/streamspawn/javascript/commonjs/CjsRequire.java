@@ -1,8 +1,9 @@
 package net.programmer.igoodie.streamspawn.javascript.commonjs;
 
-import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
-import net.programmer.igoodie.streamspawn.javascript.base.RuntimeAPI;
-import org.mozilla.javascript.*;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Script;
+import org.mozilla.javascript.ScriptRuntime;
+import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.commonjs.module.ModuleScriptProvider;
 import org.mozilla.javascript.commonjs.module.Require;
 
@@ -23,13 +24,13 @@ public class CjsRequire extends Require {
 
         String id = (String) Context.jsToJava(args[0], String.class);
 
-        if (cjs.apiLookup.containsKey(id)) {
-            return cjs.loadedApis.computeIfAbsent(id, moduleId -> {
-                RuntimeAPI runtimeAPI = cjs.apiLookup.get(moduleId);
-                ScriptableObject moduleScope = JavascriptEngine.createScope();
-                runtimeAPI.install(moduleScope);
-                return moduleScope;
-            });
+        IntrinsicModule intrinsicModule = cjs.intrinsicModules.get(id);
+
+        if (intrinsicModule != null) {
+            if (!intrinsicModule.isLoaded()) {
+                intrinsicModule.load();
+            }
+            return intrinsicModule.moduleScope;
         }
 
         return super.call(cx, scope, thisObj, args);
