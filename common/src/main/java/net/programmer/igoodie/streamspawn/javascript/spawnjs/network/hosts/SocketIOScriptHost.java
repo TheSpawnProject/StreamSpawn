@@ -3,7 +3,7 @@ package net.programmer.igoodie.streamspawn.javascript.spawnjs.network.hosts;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
-import net.programmer.igoodie.streamspawn.javascript.base.ServiceObject;
+import net.programmer.igoodie.streamspawn.javascript.base.IntrinsicService;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.annotations.JSConstructor;
 import org.mozilla.javascript.annotations.JSFunction;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 // TODO: Support SIOv1, SIOv2, SIOv3 and SIOv4
-public class SocketIOHost extends ServiceObject {
+public class SocketIOScriptHost extends IntrinsicService {
 
     protected URI url;
     protected Socket socket;
@@ -26,7 +26,7 @@ public class SocketIOHost extends ServiceObject {
         return "SocketIO";
     }
 
-    public SocketIOHost() {
+    public SocketIOScriptHost() {
         this.options = new IO.Options();
         options.forceNew = true;
         options.reconnection = true;
@@ -36,7 +36,7 @@ public class SocketIOHost extends ServiceObject {
     }
 
     @JSConstructor
-    public SocketIOHost(String url) {
+    public SocketIOScriptHost(String url) {
         this();
         this.url = URI.create(url);
     }

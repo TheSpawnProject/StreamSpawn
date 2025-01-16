@@ -1,7 +1,7 @@
 package net.programmer.igoodie.streamspawn.javascript.spawnjs.network.hosts;
 
 import net.programmer.igoodie.goodies.util.accessor.ArrayAccessor;
-import net.programmer.igoodie.streamspawn.javascript.base.ServiceObject;
+import net.programmer.igoodie.streamspawn.javascript.base.IntrinsicService;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class TcpConnectionHost extends ServiceObject {
+public class TcpConnectionScriptHost extends IntrinsicService {
 
     protected String host;
     protected int port;
@@ -31,22 +31,22 @@ public class TcpConnectionHost extends ServiceObject {
     protected Socket socket;
     protected InputStream inputStream;
     protected OutputStream outputStream;
-    protected BufferHost buffer;
+    protected BufferScriptHost buffer;
 
     protected Map<Event, List<Listener>> listeners = new HashMap<>();
 
     protected final ExecutorService executor = Executors.newCachedThreadPool();
 
-    public TcpConnectionHost() {}
+    public TcpConnectionScriptHost() {}
 
-    public TcpConnectionHost(String host, int port) {
+    public TcpConnectionScriptHost(String host, int port) {
         this.host = host;
         this.port = port;
         this.socket = new Socket();
     }
 
     @JSConstructor
-    public static TcpConnectionHost constructor(Context cx, Object[] args, Function ctor, boolean inNewExpr) {
+    public static TcpConnectionScriptHost constructor(Context cx, Object[] args, Function ctor, boolean inNewExpr) {
         ArrayAccessor<Object> argsAccessor = ArrayAccessor.of(args);
         Object arg0 = argsAccessor.get(0).orElse(null);
         Object arg1 = argsAccessor.get(1).orElse(null);
@@ -55,11 +55,11 @@ public class TcpConnectionHost extends ServiceObject {
 
         if (arg0 instanceof String host) {
             if (arg1 instanceof Integer port) {
-                return bindToScope(new TcpConnectionHost(host, port), scope);
+                return bindToScope(new TcpConnectionScriptHost(host, port), scope);
             }
         }
 
-        throw createInvalidArgumentsException(new TcpConnectionHost(), args, ctor);
+        throw createInvalidArgumentsException(new TcpConnectionScriptHost(), args, ctor);
     }
 
     @Override
@@ -77,12 +77,12 @@ public class TcpConnectionHost extends ServiceObject {
     }
 
     @JSGetter
-    public BufferHost getBuffer() {
+    public BufferScriptHost getBuffer() {
         return this.buffer;
     }
 
     @JSSetter
-    public void setBuffer(BufferHost buffer) {
+    public void setBuffer(BufferScriptHost buffer) {
         this.buffer = buffer;
     }
 
@@ -92,7 +92,7 @@ public class TcpConnectionHost extends ServiceObject {
         Object arg0 = argsAccessor.get(0).orElse(null);
         Object arg1 = argsAccessor.get(1).orElse(null);
 
-        TcpConnectionHost hostObj = (TcpConnectionHost) thisObj;
+        TcpConnectionScriptHost hostObj = (TcpConnectionScriptHost) thisObj;
 
         if (arg0 instanceof String eventName) {
             if (arg1 instanceof Function listener) {

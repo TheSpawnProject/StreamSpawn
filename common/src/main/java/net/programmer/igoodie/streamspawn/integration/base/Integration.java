@@ -1,7 +1,7 @@
 package net.programmer.igoodie.streamspawn.integration.base;
 
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
-import net.programmer.igoodie.streamspawn.javascript.base.ServiceObject;
+import net.programmer.igoodie.streamspawn.javascript.base.IntrinsicService;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
@@ -22,7 +22,7 @@ public class Integration {
     protected final String version;
     protected Script script;
 
-    public final List<ServiceObject> services = new ArrayList<>();
+    public final List<IntrinsicService> services = new ArrayList<>();
 
     public Integration(String name, String version) {
         this.name = name;
@@ -38,7 +38,7 @@ public class Integration {
     }
 
     public ScriptableObject createScope(Scriptable parentScope) {
-        ScriptableObject integrationScope = JavascriptEngine.createScope(parentScope);
+        ScriptableObject integrationScope = JavascriptEngine.createObject(parentScope);
         JavascriptEngine.eval(integrationScope, "const integrationId = '" + name + "'");
         JavascriptEngine.eval(integrationScope, "const integrationVersion = '" + version + "'");
         JavascriptEngine.eval(integrationScope, "const integrationConfig = { token: 'TODO:DUMMY_TOKEN' };");

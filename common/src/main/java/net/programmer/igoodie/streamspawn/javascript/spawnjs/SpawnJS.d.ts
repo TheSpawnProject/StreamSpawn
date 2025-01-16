@@ -32,3 +32,10 @@ declare type EventArgs = {
 };
 
 declare function emit(eventName: string, eventArgs: EventArgs): void;
+
+interface ServiceSymbols {
+  readonly beginService: unique symbol;
+  readonly terminateService: unique symbol;
+}
+
+declare const ServiceSymbols: ServiceSymbols;

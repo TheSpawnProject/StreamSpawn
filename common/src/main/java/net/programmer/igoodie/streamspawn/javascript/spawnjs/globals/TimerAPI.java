@@ -1,12 +1,12 @@
 package net.programmer.igoodie.streamspawn.javascript.spawnjs.globals;
 
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
-import net.programmer.igoodie.streamspawn.javascript.base.RuntimeAPI;
+import net.programmer.igoodie.streamspawn.javascript.base.GlobalAPI;
 import org.mozilla.javascript.*;
 
 import java.util.*;
 
-public class TimerAPI implements RuntimeAPI {
+public class TimerAPI implements GlobalAPI {
 
     public void install(ScriptableObject scope) {
         scope.defineProperty("setTimeout", new SetTimeout(), ScriptableObject.CONST);

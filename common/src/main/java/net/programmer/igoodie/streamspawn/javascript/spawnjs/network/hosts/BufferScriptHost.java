@@ -1,7 +1,7 @@
 package net.programmer.igoodie.streamspawn.javascript.spawnjs.network.hosts;
 
 import net.programmer.igoodie.goodies.util.accessor.ArrayAccessor;
-import net.programmer.igoodie.streamspawn.javascript.base.HostObject;
+import net.programmer.igoodie.streamspawn.javascript.base.ScriptHost;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeArray;
@@ -16,16 +16,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 
-public class BufferHost extends HostObject {
+public class BufferScriptHost extends ScriptHost {
 
     protected byte[] buffer;
 
-    public BufferHost() {
+    public BufferScriptHost() {
         this.buffer = new byte[0];
     }
 
     @JSConstructor
-    public BufferHost(NativeArray buffer) {
+    public BufferScriptHost(NativeArray buffer) {
         this.buffer = from(buffer).buffer;
     }
 
@@ -35,7 +35,7 @@ public class BufferHost extends HostObject {
     }
 
     @JSStaticFunction("alloc")
-    public static BufferHost _alloc(Context cx, Scriptable thisObj, Object[] args, Function function) {
+    public static BufferScriptHost _alloc(Context cx, Scriptable thisObj, Object[] args, Function function) {
         ArrayAccessor<Object> argsAccessor = ArrayAccessor.of(args);
         Object arg0 = argsAccessor.get(0).orElse(null);
         Object arg1 = argsAccessor.get(1).orElse(null);
@@ -65,20 +65,20 @@ public class BufferHost extends HostObject {
         throw createInvalidArgumentsException(thisObj, args, function);
     }
 
-    public static BufferHost alloc(int size, byte fill) {
-        BufferHost host = new BufferHost();
+    public static BufferScriptHost alloc(int size, byte fill) {
+        BufferScriptHost host = new BufferScriptHost();
         host.buffer = new byte[size];
         return host.fill(fill);
     }
 
-    public static BufferHost alloc(int size, String fill, String encoding) {
-        BufferHost host = new BufferHost();
+    public static BufferScriptHost alloc(int size, String fill, String encoding) {
+        BufferScriptHost host = new BufferScriptHost();
         host.buffer = new byte[size];
         return host.fill(fill, encoding);
     }
 
     @JSStaticFunction("from")
-    public static BufferHost _from(Context cx, Scriptable thisObj, Object[] args, Function function) {
+    public static BufferScriptHost _from(Context cx, Scriptable thisObj, Object[] args, Function function) {
         ArrayAccessor<Object> argsAccessor = ArrayAccessor.of(args);
         Object arg0 = argsAccessor.get(0).orElse(null);
         Object arg1 = argsAccessor.get(1).orElse(null);
@@ -98,8 +98,8 @@ public class BufferHost extends HostObject {
         throw createInvalidArgumentsException(thisObj, args, function);
     }
 
-    public static BufferHost from(NativeArray array) {
-        BufferHost host = new BufferHost();
+    public static BufferScriptHost from(NativeArray array) {
+        BufferScriptHost host = new BufferScriptHost();
 
         byte[] buffer = new byte[array.size()];
 
@@ -117,21 +117,21 @@ public class BufferHost extends HostObject {
         return host;
     }
 
-    public static BufferHost from(NativeArrayBuffer arrayBuffer) {
-        BufferHost host = new BufferHost();
+    public static BufferScriptHost from(NativeArrayBuffer arrayBuffer) {
+        BufferScriptHost host = new BufferScriptHost();
         host.buffer = arrayBuffer.getBuffer();
         return host;
     }
 
     @JSFunction("fill")
-    public static BufferHost _fill(Context cx, Scriptable thisObj, Object[] args, Function function) {
+    public static BufferScriptHost _fill(Context cx, Scriptable thisObj, Object[] args, Function function) {
         ArrayAccessor<Object> argsAccessor = ArrayAccessor.of(args);
         Object arg0 = argsAccessor.get(0).orElse(null);
         Object arg1 = argsAccessor.get(1).orElse(null);
         Object arg2 = argsAccessor.get(2).orElse(null);
         Object arg3 = argsAccessor.get(3).orElse(null);
 
-        BufferHost hostObj = (BufferHost) thisObj;
+        BufferScriptHost hostObj = (BufferScriptHost) thisObj;
 
         if (arg0 instanceof Number value) {
             if (arg1 instanceof Number offset) {
@@ -170,20 +170,20 @@ public class BufferHost extends HostObject {
         throw createInvalidArgumentsException(thisObj, args, function);
     }
 
-    public BufferHost fill(byte value) {
+    public BufferScriptHost fill(byte value) {
         return fill(value, 0, this.buffer.length);
     }
 
-    public BufferHost fill(byte value, int offset, int end) {
+    public BufferScriptHost fill(byte value, int offset, int end) {
         Arrays.fill(this.buffer, offset, end, value);
         return this;
     }
 
-    public BufferHost fill(String value, String encoding) {
+    public BufferScriptHost fill(String value, String encoding) {
         return fill(value, 0, this.buffer.length, encoding);
     }
 
-    public BufferHost fill(String value, int offset, int end, String encoding) {
+    public BufferScriptHost fill(String value, int offset, int end, String encoding) {
         if (value.isEmpty()) return fill((byte) 0, offset, end);
 
         byte[] valueEncoded = Codec.encode(value, encoding);

@@ -2,10 +2,11 @@ package net.programmer.igoodie.streamspawn.init;
 
 import net.programmer.igoodie.streamspawn.integration.base.Integration;
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
-import net.programmer.igoodie.streamspawn.javascript.base.ServiceObject;
+import net.programmer.igoodie.streamspawn.javascript.base.IntrinsicService;
 import net.programmer.igoodie.streamspawn.javascript.global.EmitFn;
 import net.programmer.igoodie.streamspawn.javascript.global.RegisterServiceFn;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.SpawnJS;
+import net.programmer.igoodie.streamspawn.javascript.spawnjs.globals.ServiceAPI;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ScriptableObject;
 
@@ -43,35 +44,30 @@ public class ModIntegrations {
 //                    "   .then(res => { throw new Error('Wopsie') })" +
 //                    "   .catch(err => print('Omg an error', err.getValue()));");
             integration.loadScript("""
-                    //const utilModule = require("util");
-                    //console.log(utilModule);
-                    
-                    require("util");
-                    require("util");
-                    require("util2");
-                    const { PI } = require("util2");
-                    console.log("Pi from util2 =", PI);
-                    console.log();
-                    
-                    const { WebsocketClient } = require("./websocket.js");
-                    var ws = new WebsocketClient("127.0.0.1", 8080);
-                    console.log(ws.tcp.underlyingSocket);
-                    console.log(ws.name);
-                    console.log();
-                    
-                    const { TcpConnection } = require("spawnjs:network");
-                    console.log(new TcpConnection("127.0.0.1", 8080).underlyingSocket);
-                    console.log();
-                    
-                    require("./util2.js");
-                    require("./util2.js");
-                    console.log();
+                        const { TcpConnection, Buffer } = require("spawnjs:network");
+                        const tcp = new TcpConnection("127.0.0.1", 8080);
+                        Buffer.alloc(16);
+                        
+//                    console.log(ServiceSymbols.beginService);
+//                    console.log(ServiceSymbols.terminateService);
+//
+//                    const myInstance = {
+//                        [ServiceSymbols.beginService]: () => console.log("Begin!")
+//                    }
+//
+//                    console.log(myInstance)
+//                    console.log(myInstance[ServiceSymbols.beginService]())
+//
+//                    myInstance;
                     """);
             INTEGRATION_REGISTRY.put(integration.getName(), integration);
             ScriptableObject integrationScope = integration.createScope(globalScope);
-            integration.getScript().exec(JavascriptEngine.CONTEXT.get(), integrationScope);
+            Object result = integration.getScript().exec(JavascriptEngine.CONTEXT.get(), integrationScope);
 
-            integration.services.forEach(ServiceObject::begin);
+            System.out.println(result.getClass());
+            System.out.println(ServiceAPI.isService(((ScriptableObject) result)));
+
+            integration.services.forEach(IntrinsicService::begin);
 
         } catch (Exception e) {
             throw new RuntimeException(e);

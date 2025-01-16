@@ -1,10 +1,11 @@
 package net.programmer.igoodie.streamspawn.javascript.spawnjs.network;
 
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
+import net.programmer.igoodie.streamspawn.javascript.classes.ClassDefiner;
 import net.programmer.igoodie.streamspawn.javascript.commonjs.IntrinsicModule;
-import net.programmer.igoodie.streamspawn.javascript.spawnjs.network.hosts.BufferHost;
-import net.programmer.igoodie.streamspawn.javascript.spawnjs.network.hosts.SocketIOHost;
-import net.programmer.igoodie.streamspawn.javascript.spawnjs.network.hosts.TcpConnectionHost;
+import net.programmer.igoodie.streamspawn.javascript.spawnjs.network.hosts.BufferScriptHost;
+import net.programmer.igoodie.streamspawn.javascript.spawnjs.network.hosts.SocketIOScriptHost;
+import net.programmer.igoodie.streamspawn.javascript.spawnjs.network.hosts.TcpConnectionScriptHost;
 import org.mozilla.javascript.ScriptableObject;
 
 public class NetworkModule extends IntrinsicModule {
@@ -16,9 +17,9 @@ public class NetworkModule extends IntrinsicModule {
 
     @Override
     public void buildExports(ScriptableObject exports) {
-        JavascriptEngine.defineClass(exports, BufferHost.class);
-        JavascriptEngine.defineClass(exports, TcpConnectionHost.class);
-        JavascriptEngine.defineClass(exports, SocketIOHost.class);
+        ClassDefiner.defineClass(exports, BufferScriptHost.class, true, false);
+        JavascriptEngine.defineClass(exports, TcpConnectionScriptHost.class);
+        JavascriptEngine.defineClass(exports, SocketIOScriptHost.class);
     }
 
 }

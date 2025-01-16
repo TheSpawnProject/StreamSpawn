@@ -9,7 +9,7 @@ import org.mozilla.javascript.Scriptable;
 import java.util.Arrays;
 
 // TODO: What to do when a ServiceObject throws an Exception?
-public abstract class ServiceObject extends HostObject {
+public abstract class IntrinsicService extends ScriptHost {
 
     public abstract void begin();
 

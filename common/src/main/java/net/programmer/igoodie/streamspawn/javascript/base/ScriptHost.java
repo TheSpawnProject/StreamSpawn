@@ -6,7 +6,7 @@ import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
-public abstract class HostObject extends ScriptableObject {
+public abstract class ScriptHost extends ScriptableObject {
 
     protected static <S extends Scriptable> S bindToScope(S obj, Scriptable scope) {
         obj.setParentScope(scope);

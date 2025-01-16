@@ -1,19 +1,18 @@
 package net.programmer.igoodie.streamspawn.javascript.spawnjs.globals;
 
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
-import net.programmer.igoodie.streamspawn.javascript.base.RuntimeAPI;
+import net.programmer.igoodie.streamspawn.javascript.base.GlobalAPI;
 import org.mozilla.javascript.*;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class ConsoleAPI implements RuntimeAPI {
+public class ConsoleAPI implements GlobalAPI {
 
     @Override
     public void install(ScriptableObject scope) {
-        ScriptableObject consoleObj = JavascriptEngine.createScope(scope);
+        ScriptableObject consoleObj = JavascriptEngine.createObject(scope);
         scope.defineProperty("console", consoleObj, ScriptableObject.CONST);
-
         consoleObj.defineProperty("log", new Log(), ScriptableObject.CONST);
     }
 

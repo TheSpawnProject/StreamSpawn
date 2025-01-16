@@ -20,7 +20,7 @@ public abstract class IntrinsicModule {
     }
 
     public void load() {
-        ScriptableObject scope = JavascriptEngine.createScope();
+        ScriptableObject scope = JavascriptEngine.createObject();
         this.buildExports(scope);
 
         try {
