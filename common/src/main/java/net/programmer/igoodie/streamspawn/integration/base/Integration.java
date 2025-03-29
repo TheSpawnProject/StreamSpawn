@@ -3,10 +3,7 @@ package net.programmer.igoodie.streamspawn.integration.base;
 import net.programmer.igoodie.goodies.registry.Registrable;
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
 import net.programmer.igoodie.streamspawn.javascript.service.ScriptService;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Script;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -44,6 +41,8 @@ public class Integration implements Registrable<String> {
     public ScriptableObject createScope(Scriptable parentScope) {
         ScriptableObject integrationScope = JavascriptEngine.createObject(parentScope);
         integrationScope.defineProperty("integration", Context.javaToJS(this.manifest, integrationScope), ScriptableObject.CONST);
+        integrationScope.defineProperty("exports", new NativeObject(), ScriptableObject.PERMANENT);
+        integrationScope.defineProperty("module", new NativeObject(), ScriptableObject.PERMANENT);
         JavascriptEngine.eval(integrationScope, "const integrationConfig = { token: 'TODO:DUMMY_TOKEN' };");
         return integrationScope;
     }
@@ -60,7 +59,7 @@ public class Integration implements Registrable<String> {
 
     public void loadScript(String source) {
         Context cx = JavascriptEngine.CONTEXT.get();
-        // TODO: Wrap with ModuleScript
+        source = source.replaceFirst("^[\"']use strict[\"'];?", "//'use strict';");
         this.script = cx.compileString(source, "<anonymous>", 1, null);
     }
 

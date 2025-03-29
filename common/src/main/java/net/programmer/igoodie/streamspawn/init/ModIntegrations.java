@@ -29,39 +29,46 @@ public class ModIntegrations {
 
 //            integration.downloadScript("https://pastebin.com/raw/B1J0kQym");
             integration.loadScript("""
-                                        "use strict";
-                    //                    Object.defineProperty(exports, "__esModule", { value: true });
-                                        const spawnjs_network_1 = require("spawnjs:network");
-                                        const sio = new spawnjs_network_1.SocketIO("https://sockets.streamlabs.com");
-                                        const x = 5;
-                                        sio.addServiceListener("service-starting", () => {
-                                            console.log("Lifecycle, service starting.")
-                                        });
-                                        sio.on("error", (error) => {
-                                            console.log("Error!", error);
-                                            stopIntegration("Stopping because of an error: " + error);
-                                        });
-                                        sio.on("connect", () => {
-                                            sio.socket.emit("ping", [], () => console.log("pong"));
-                                            console.log("Connected!", x);
-                                            setTimeout(() => console.log("Connected 5 seconds before this!"), 5000);
-                                        });
-                                        sio.on("disconnect", () => {
-                                            console.log("Disconnected!");
-                                            stopIntegration("Disconnected");
-                                        });
-                                        sio.on("event", (data) => {
-                                            var _a;
-                                            const eventType = data.type;
-                                            const eventFor = data.for;
-                                            const message = (_a = data.message[0]) !== null && _a !== void 0 ? _a : data.message;
-                                            console.log(eventType, eventFor, message);
-                                            emit("Twitch Follow", {
-                                                foo: "bar",
-                                                mods: [1, 2, 3, "admin"],
-                                            });
-                                        });
-                                        registerService(sio);
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.foo = void 0;
+exports.bar = bar;
+exports.default = baz;
+const spawnjs_network_1 = require("spawnjs:network");
+const sio = new spawnjs_network_1.SocketIO("https://sockets.streamlabs.com");
+const x = 5;
+sio.options.query = "token=" + integrationConfig.token;
+sio.onStart = () => {
+    console.log("START!");
+};
+sio.on("error", (error) => {
+    console.log("Error!", error);
+    stopIntegration("Stopping because of an error: " + error);
+});
+sio.on("connect", () => {
+    sio.socket.emit("ping", [], () => console.log("pong"));
+    console.log("Connected!", x);
+    setTimeout(() => console.log("Connected 5 seconds before this!"), 5000);
+});
+sio.on("disconnect", () => {
+    console.log("Disconnected!");
+    stopIntegration("Disconnected");
+});
+sio.on("event", (data) => {
+    const eventType = data.type;
+    const eventFor = data.for;
+    const message = data.message[0] ?? data.message;
+    console.log(eventType, eventFor, message);
+    emit("Twitch Follow", {
+        foo: "bar",
+        mods: [1, 2, 3, "admin"],
+    });
+});
+registerService(sio);
+exports.foo = 5;
+function bar() { }
+function baz() { }
+
                     """);
             INTEGRATION_REGISTRY.register(integration);
             ScriptableObject integrationScope = integration.createScope(globalScope);

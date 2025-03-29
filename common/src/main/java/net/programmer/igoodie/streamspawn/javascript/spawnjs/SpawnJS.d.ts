@@ -2,6 +2,7 @@
 /// <reference path="./globals/ServiceAPI.d.ts"/>
 /// <reference path="./globals/ConsoleAPI.d.ts"/>
 /// <reference path="./globals/TimerAPI.d.ts"/>
+
 /// <reference path="./modules/Core.d.ts"/>
 /// <reference path="./modules/Network.d.ts"/>
 
@@ -20,5 +21,3 @@ declare interface JavaBackedObject {
 }
 
 declare function stopIntegration(reason: string): void;
-
-declare class Bromise<T> extends Promise<T> {}
