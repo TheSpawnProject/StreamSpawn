@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 // TODO: Support SIOv1, SIOv2, SIOv3 and SIOv4
-public class SocketIOScriptHost extends ScriptService {
+public class SocketIOHost extends ScriptService {
 
     protected URI url;
     protected Socket socket;
@@ -27,7 +27,7 @@ public class SocketIOScriptHost extends ScriptService {
         return "SocketIO";
     }
 
-    public SocketIOScriptHost() {
+    public SocketIOHost() {
         this.options = new IO.Options();
         options.forceNew = true;
         options.reconnection = true;
@@ -37,7 +37,7 @@ public class SocketIOScriptHost extends ScriptService {
     }
 
     @JSConstructor
-    public SocketIOScriptHost(String url) {
+    public SocketIOHost(String url) {
         this();
         this.url = URI.create(url);
     }

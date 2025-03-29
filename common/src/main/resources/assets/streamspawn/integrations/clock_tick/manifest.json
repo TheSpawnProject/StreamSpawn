@@ -1,0 +1,6 @@
+{
+  "$schema": "todo",
+  "id": "clock_tick",
+  "name": "Clock Tick",
+  "version": "1.0.0"
+}

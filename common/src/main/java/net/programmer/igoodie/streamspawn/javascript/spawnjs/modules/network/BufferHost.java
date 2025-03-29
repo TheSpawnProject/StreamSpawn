@@ -17,16 +17,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 
-public class BufferScriptHost extends ScriptHost {
+public class BufferHost extends ScriptHost {
 
     protected byte[] buffer;
 
-    public BufferScriptHost() {
+    public BufferHost() {
         this.buffer = new byte[0];
     }
 
     @JSConstructor
-    public BufferScriptHost(NativeArray buffer) {
+    public BufferHost(NativeArray buffer) {
         this.buffer = from(buffer).buffer;
     }
 
@@ -36,7 +36,7 @@ public class BufferScriptHost extends ScriptHost {
     }
 
     @JSStaticFunction("alloc")
-    public static BufferScriptHost _alloc(Context cx, Scriptable thisObj, Object[] args, Function function) {
+    public static BufferHost _alloc(Context cx, Scriptable thisObj, Object[] args, Function function) {
         ArrayAccessor<Object> argsAccessor = ArrayAccessor.of(args);
         Object arg0 = argsAccessor.get(0).orElse(null);
         Object arg1 = argsAccessor.get(1).orElse(null);
@@ -66,20 +66,20 @@ public class BufferScriptHost extends ScriptHost {
         throw SpawnJSExceptions.invalidArguments(thisObj, args, function);
     }
 
-    public static BufferScriptHost alloc(int size, byte fill) {
-        BufferScriptHost host = new BufferScriptHost();
+    public static BufferHost alloc(int size, byte fill) {
+        BufferHost host = new BufferHost();
         host.buffer = new byte[size];
         return host.fill(fill);
     }
 
-    public static BufferScriptHost alloc(int size, String fill, String encoding) {
-        BufferScriptHost host = new BufferScriptHost();
+    public static BufferHost alloc(int size, String fill, String encoding) {
+        BufferHost host = new BufferHost();
         host.buffer = new byte[size];
         return host.fill(fill, encoding);
     }
 
     @JSStaticFunction("from")
-    public static BufferScriptHost _from(Context cx, Scriptable thisObj, Object[] args, Function function) {
+    public static BufferHost _from(Context cx, Scriptable thisObj, Object[] args, Function function) {
         ArrayAccessor<Object> argsAccessor = ArrayAccessor.of(args);
         Object arg0 = argsAccessor.get(0).orElse(null);
         Object arg1 = argsAccessor.get(1).orElse(null);
@@ -99,8 +99,8 @@ public class BufferScriptHost extends ScriptHost {
         throw SpawnJSExceptions.invalidArguments(thisObj, args, function);
     }
 
-    public static BufferScriptHost from(NativeArray array) {
-        BufferScriptHost host = new BufferScriptHost();
+    public static BufferHost from(NativeArray array) {
+        BufferHost host = new BufferHost();
 
         byte[] buffer = new byte[array.size()];
 
@@ -118,21 +118,21 @@ public class BufferScriptHost extends ScriptHost {
         return host;
     }
 
-    public static BufferScriptHost from(NativeArrayBuffer arrayBuffer) {
-        BufferScriptHost host = new BufferScriptHost();
+    public static BufferHost from(NativeArrayBuffer arrayBuffer) {
+        BufferHost host = new BufferHost();
         host.buffer = arrayBuffer.getBuffer();
         return host;
     }
 
     @JSFunction("fill")
-    public static BufferScriptHost _fill(Context cx, Scriptable thisObj, Object[] args, Function function) {
+    public static BufferHost _fill(Context cx, Scriptable thisObj, Object[] args, Function function) {
         ArrayAccessor<Object> argsAccessor = ArrayAccessor.of(args);
         Object arg0 = argsAccessor.get(0).orElse(null);
         Object arg1 = argsAccessor.get(1).orElse(null);
         Object arg2 = argsAccessor.get(2).orElse(null);
         Object arg3 = argsAccessor.get(3).orElse(null);
 
-        BufferScriptHost hostObj = (BufferScriptHost) thisObj;
+        BufferHost hostObj = (BufferHost) thisObj;
 
         if (arg0 instanceof Number value) {
             if (arg1 instanceof Number offset) {
@@ -171,20 +171,20 @@ public class BufferScriptHost extends ScriptHost {
         throw SpawnJSExceptions.invalidArguments(thisObj, args, function);
     }
 
-    public BufferScriptHost fill(byte value) {
+    public BufferHost fill(byte value) {
         return fill(value, 0, this.buffer.length);
     }
 
-    public BufferScriptHost fill(byte value, int offset, int end) {
+    public BufferHost fill(byte value, int offset, int end) {
         Arrays.fill(this.buffer, offset, end, value);
         return this;
     }
 
-    public BufferScriptHost fill(String value, String encoding) {
+    public BufferHost fill(String value, String encoding) {
         return fill(value, 0, this.buffer.length, encoding);
     }
 
-    public BufferScriptHost fill(String value, int offset, int end, String encoding) {
+    public BufferHost fill(String value, int offset, int end, String encoding) {
         if (value.isEmpty()) return fill((byte) 0, offset, end);
 
         byte[] valueEncoded = Codec.encode(value, encoding);

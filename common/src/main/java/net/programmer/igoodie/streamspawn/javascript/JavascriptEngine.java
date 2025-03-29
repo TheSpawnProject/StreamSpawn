@@ -1,7 +1,6 @@
 package net.programmer.igoodie.streamspawn.javascript;
 
 import net.programmer.igoodie.goodies.registry.Registry;
-import net.programmer.igoodie.streamspawn.javascript.base.ScriptHost;
 import net.programmer.igoodie.streamspawn.javascript.coercer.Coercer;
 import net.programmer.igoodie.streamspawn.javascript.coercer.JSONCoercer;
 import org.mozilla.javascript.Context;
@@ -54,14 +53,6 @@ public class JavascriptEngine {
             if (parentScope != null) scope.setParentScope(parentScope);
             return scope;
         });
-    }
-
-    public static <T extends ScriptHost> void defineClass(Scriptable scope, Class<T> clazz) {
-        try {
-            ScriptableObject.defineClass(scope, clazz);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public static <T> Object coerce(T value) {

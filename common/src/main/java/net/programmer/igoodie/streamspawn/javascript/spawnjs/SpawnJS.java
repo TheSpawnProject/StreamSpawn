@@ -6,6 +6,7 @@ import net.programmer.igoodie.streamspawn.javascript.commonjs.CjsAPI;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.globals.ConsoleAPI;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.globals.TimerAPI;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.globals.TslAPI;
+import net.programmer.igoodie.streamspawn.javascript.spawnjs.modules.CoreModule;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.modules.NetworkModule;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.commonjs.module.ModuleScope;
@@ -18,6 +19,7 @@ public class SpawnJS implements ScopeInstallable {
     @Override
     public void install(ScriptableObject scope) {
         new CjsAPI()
+                .withIntrinsicModule(new CoreModule())
                 .withIntrinsicModule(new NetworkModule())
                 .install(scope);
 

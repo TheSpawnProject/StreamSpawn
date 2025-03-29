@@ -9,7 +9,7 @@ declare class Service {
   public addServiceListener<K extends keyof Service.LifecycleEventsMap>(
     eventName: K,
     listener: Service.LifecycleEventsMap[K]
-  );
+  ): void;
 }
 
 declare function registerService(service: Service): void;

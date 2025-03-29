@@ -1,5 +1,6 @@
 package net.programmer.igoodie.streamspawn.integration.base;
 
+import net.programmer.igoodie.goodies.registry.Registrable;
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
 import net.programmer.igoodie.streamspawn.javascript.service.ScriptService;
 import org.mozilla.javascript.Context;
@@ -16,31 +17,33 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Integration {
+public class Integration implements Registrable<String> {
 
-    protected final String name;
-    protected final String version;
+    protected final IntegrationManifest manifest;
     protected Script script;
 
     public final List<ScriptService> services = new ArrayList<>();
 
-    public Integration(String name, String version) {
-        this.name = name;
-        this.version = version;
+    public Integration(IntegrationManifest manifest) {
+        this.manifest = manifest;
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public String getId() {
+        return this.manifest.id;
+    }
+
+    public IntegrationManifest getManifest() {
+        return this.manifest;
     }
 
     public Script getScript() {
-        return script;
+        return this.script;
     }
 
     public ScriptableObject createScope(Scriptable parentScope) {
         ScriptableObject integrationScope = JavascriptEngine.createObject(parentScope);
-        JavascriptEngine.eval(integrationScope, "const integrationId = '" + name + "'");
-        JavascriptEngine.eval(integrationScope, "const integrationVersion = '" + version + "'");
+        integrationScope.defineProperty("integration", Context.javaToJS(this.manifest, integrationScope), ScriptableObject.CONST);
         JavascriptEngine.eval(integrationScope, "const integrationConfig = { token: 'TODO:DUMMY_TOKEN' };");
         return integrationScope;
     }

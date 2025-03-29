@@ -1,7 +1,8 @@
 package net.programmer.igoodie.streamspawn.javascript.spawnjs.modules.network;
 
 import net.programmer.igoodie.goodies.util.accessor.ArrayAccessor;
-import net.programmer.igoodie.streamspawn.javascript.base.IntrinsicService;
+import net.programmer.igoodie.streamspawn.javascript.coercer.CoercibleFunction;
+import net.programmer.igoodie.streamspawn.javascript.service.ScriptService;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.SpawnJSExceptions;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
@@ -24,7 +25,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class TcpConnectionScriptHost extends IntrinsicService {
+public class TcpConnectionHost extends ScriptService {
 
     protected String host;
     protected int port;
@@ -32,22 +33,22 @@ public class TcpConnectionScriptHost extends IntrinsicService {
     protected Socket socket;
     protected InputStream inputStream;
     protected OutputStream outputStream;
-    protected BufferScriptHost buffer;
+    protected BufferHost buffer;
 
     protected Map<Event, List<Listener>> listeners = new HashMap<>();
 
     protected final ExecutorService executor = Executors.newCachedThreadPool();
 
-    public TcpConnectionScriptHost() {}
+    public TcpConnectionHost() {}
 
-    public TcpConnectionScriptHost(String host, int port) {
+    public TcpConnectionHost(String host, int port) {
         this.host = host;
         this.port = port;
         this.socket = new Socket();
     }
 
     @JSConstructor
-    public static TcpConnectionScriptHost constructor(Context cx, Object[] args, Function ctor, boolean inNewExpr) {
+    public static TcpConnectionHost constructor(Context cx, Object[] args, Function ctor, boolean inNewExpr) {
         ArrayAccessor<Object> argsAccessor = ArrayAccessor.of(args);
         Object arg0 = argsAccessor.get(0).orElse(null);
         Object arg1 = argsAccessor.get(1).orElse(null);
@@ -56,11 +57,11 @@ public class TcpConnectionScriptHost extends IntrinsicService {
 
         if (arg0 instanceof String host) {
             if (arg1 instanceof Integer port) {
-                return bindToScope(new TcpConnectionScriptHost(host, port), scope);
+                return bindToScope(new TcpConnectionHost(host, port), scope);
             }
         }
 
-        throw SpawnJSExceptions.invalidArguments(new TcpConnectionScriptHost(), args, ctor);
+        throw SpawnJSExceptions.invalidArguments(new TcpConnectionHost(), args, ctor);
     }
 
     @Override
@@ -78,12 +79,12 @@ public class TcpConnectionScriptHost extends IntrinsicService {
     }
 
     @JSGetter
-    public BufferScriptHost getBuffer() {
+    public BufferHost getBuffer() {
         return this.buffer;
     }
 
     @JSSetter
-    public void setBuffer(BufferScriptHost buffer) {
+    public void setBuffer(BufferHost buffer) {
         this.buffer = buffer;
     }
 
@@ -93,14 +94,14 @@ public class TcpConnectionScriptHost extends IntrinsicService {
         Object arg0 = argsAccessor.get(0).orElse(null);
         Object arg1 = argsAccessor.get(1).orElse(null);
 
-        TcpConnectionScriptHost hostObj = (TcpConnectionScriptHost) thisObj;
+        TcpConnectionHost hostObj = (TcpConnectionHost) thisObj;
 
         if (arg0 instanceof String eventName) {
-            if (arg1 instanceof Function listener) {
+            if (arg1 instanceof Function cb) {
                 try {
                     Event event = Event.valueOf(eventName.toUpperCase());
-                    Listener eventListener = hostObj.makeCoercible(listener);
-                    hostObj.getListeners(event).add(eventListener);
+                    CoercibleFunction listener = CoercibleFunction.makeCoercible(thisObj.getParentScope(), cb);
+                    hostObj.getListeners(event).add(listener::call);
                     return;
                 } catch (Exception ignored) {
                     throw new IllegalArgumentException("Invalid event name: " + eventName);
@@ -112,7 +113,7 @@ public class TcpConnectionScriptHost extends IntrinsicService {
     }
 
     @Override
-    public void begin() {
+    public void beginImpl() {
         executor.submit(() -> {
             try {
                 InetSocketAddress socketAddress = new InetSocketAddress(this.host, this.port);
@@ -164,7 +165,7 @@ public class TcpConnectionScriptHost extends IntrinsicService {
     }
 
     @Override
-    public void terminate() {
+    public void terminateImpl() {
         try {
             if (inputStream != null) inputStream.close();
             if (outputStream != null) outputStream.close();
@@ -184,6 +185,10 @@ public class TcpConnectionScriptHost extends IntrinsicService {
         LOOKUP,
         READY,
         TIMEOUT
+    }
+
+    public interface Listener {
+        void call(Object... args);
     }
 
 }

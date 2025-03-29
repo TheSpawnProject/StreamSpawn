@@ -7,6 +7,7 @@ import org.mozilla.javascript.Scriptable;
 
 import java.util.Arrays;
 
+@FunctionalInterface
 public interface CoercibleFunction {
 
     void call(Object... args);
