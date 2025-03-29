@@ -5,11 +5,10 @@ import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
 import net.programmer.igoodie.streamspawn.javascript.service.ScriptService;
 import org.mozilla.javascript.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,6 +54,14 @@ public class Integration implements Registrable<String> {
         } catch (Exception e) {
             throw new RuntimeException("Unable to load script", e);
         }
+    }
+
+    public void loadScript(File file) throws IOException {
+        if (!file.exists()) {
+            throw new IOException("File does not exist: " + file.getAbsolutePath());
+        }
+
+        this.loadScript(Files.readString(file.toPath(), StandardCharsets.UTF_8));
     }
 
     public void loadScript(String source) {

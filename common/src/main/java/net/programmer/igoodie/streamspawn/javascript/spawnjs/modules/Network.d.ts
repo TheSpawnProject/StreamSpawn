@@ -1,3 +1,4 @@
+/// <reference path="./network/TcpClientHost.d.ts"/>
 /// <reference path="./network/SocketIOHost.d.ts"/>
 
 declare module "spawnjs:network" {

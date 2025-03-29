@@ -20,6 +20,8 @@ public class SocketIOHost extends ScriptService {
     protected URI url;
     protected Socket socket;
     protected IO.Options options;
+
+    // TODO: Refactor, once Wutax releases Interlude
     protected Map<String, Emitter.Listener> listeners;
 
     @Override

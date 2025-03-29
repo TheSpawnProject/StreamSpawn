@@ -4,7 +4,6 @@
     "target": "ES6",
 
     "alwaysStrict": false,
-    "noImplicitUseStrict": true,
 
     // Disable std platform libs, as we're using SpawnJS
     "lib": ["ES6"],
