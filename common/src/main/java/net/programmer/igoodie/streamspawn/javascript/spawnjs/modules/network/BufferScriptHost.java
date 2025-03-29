@@ -1,7 +1,8 @@
-package net.programmer.igoodie.streamspawn.javascript.spawnjs.network.hosts;
+package net.programmer.igoodie.streamspawn.javascript.spawnjs.modules.network;
 
 import net.programmer.igoodie.goodies.util.accessor.ArrayAccessor;
 import net.programmer.igoodie.streamspawn.javascript.base.ScriptHost;
+import net.programmer.igoodie.streamspawn.javascript.spawnjs.SpawnJSExceptions;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeArray;
@@ -62,7 +63,7 @@ public class BufferScriptHost extends ScriptHost {
             return bindToScope(alloc(size.intValue(), (byte) 0x0), scope);
         }
 
-        throw createInvalidArgumentsException(thisObj, args, function);
+        throw SpawnJSExceptions.invalidArguments(thisObj, args, function);
     }
 
     public static BufferScriptHost alloc(int size, byte fill) {
@@ -95,7 +96,7 @@ public class BufferScriptHost extends ScriptHost {
             return bindToScope(from(arrayBufferView.getBuffer()), scope);
         }
 
-        throw createInvalidArgumentsException(thisObj, args, function);
+        throw SpawnJSExceptions.invalidArguments(thisObj, args, function);
     }
 
     public static BufferScriptHost from(NativeArray array) {
@@ -167,7 +168,7 @@ public class BufferScriptHost extends ScriptHost {
             return hostObj.fill(value, "utf8");
         }
 
-        throw createInvalidArgumentsException(thisObj, args, function);
+        throw SpawnJSExceptions.invalidArguments(thisObj, args, function);
     }
 
     public BufferScriptHost fill(byte value) {

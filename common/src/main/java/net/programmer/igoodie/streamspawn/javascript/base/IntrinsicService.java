@@ -8,25 +8,27 @@ import org.mozilla.javascript.Scriptable;
 import java.util.Arrays;
 
 // TODO: What to do when a ServiceObject throws an Exception?
+@Deprecated
 public abstract class IntrinsicService extends ScriptHost {
 
     public abstract void begin();
 
     public abstract void terminate();
 
+    // XXX: Why the hell is this here?
     public interface Listener {
         void call(Object... args);
     }
 
-    protected Listener bindListener(Function callback) {
+    // XXX: Why the hell is this here?
+    protected Listener makeCoercible(Function callback) {
         Scriptable scope = this.getParentScope();
 
         return (args) -> {
             Context cx = JavascriptEngine.CONTEXT.get();
-            Object[] coercedArgs = Arrays.stream(args)
+            callback.call(cx, scope, null, Arrays.stream(args)
                     .map(JavascriptEngine::coerce)
-                    .toArray();
-            callback.call(cx, scope, null, coercedArgs);
+                    .toArray());
         };
     }
 

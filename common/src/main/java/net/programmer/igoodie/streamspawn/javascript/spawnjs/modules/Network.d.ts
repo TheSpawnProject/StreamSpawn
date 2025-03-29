@@ -1,4 +1,4 @@
-/// <reference path="./hosts/SocketIOHost.d.ts"/>
+/// <reference path="./network/SocketIOHost.d.ts"/>
 
 declare module "spawnjs:network" {
   export class SocketIO extends Service {

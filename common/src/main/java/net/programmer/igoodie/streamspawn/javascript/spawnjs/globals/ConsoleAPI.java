@@ -1,13 +1,13 @@
 package net.programmer.igoodie.streamspawn.javascript.spawnjs.globals;
 
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
-import net.programmer.igoodie.streamspawn.javascript.base.GlobalAPI;
+import net.programmer.igoodie.streamspawn.javascript.base.ScopeInstallable;
 import org.mozilla.javascript.*;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class ConsoleAPI implements GlobalAPI {
+public class ConsoleAPI implements ScopeInstallable {
 
     @Override
     public void install(ScriptableObject scope) {

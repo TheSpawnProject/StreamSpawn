@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "ES6",
+
+    // Disable std platform libs, as we're using SpawnJS
+    "lib": ["ES6"],
+
+    "types": [
+      "../../../../java/net/programmer/igoodie/streamspawn/javascript/spawnjs/SpawnJS.d.ts"
+    ]
+  },
+
+  "include": ["."]
+}

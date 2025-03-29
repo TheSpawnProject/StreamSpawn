@@ -1,7 +1,7 @@
 package net.programmer.igoodie.streamspawn.integration.base;
 
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
-import net.programmer.igoodie.streamspawn.javascript.base.IntrinsicService;
+import net.programmer.igoodie.streamspawn.javascript.service.ScriptService;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Script;
 import org.mozilla.javascript.Scriptable;
@@ -22,7 +22,7 @@ public class Integration {
     protected final String version;
     protected Script script;
 
-    public final List<IntrinsicService> services = new ArrayList<>();
+    public final List<ScriptService> services = new ArrayList<>();
 
     public Integration(String name, String version) {
         this.name = name;

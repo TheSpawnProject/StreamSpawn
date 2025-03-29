@@ -6,6 +6,10 @@ const x = 5;
 
 sio.options.query = "token=" + integrationConfig.token;
 
+sio.onStart = () => {
+  console.log("START!")
+};
+
 sio.on("error", (error) => {
   console.log("Error!", error);
   stopIntegration("Stopping because of an error: " + error);

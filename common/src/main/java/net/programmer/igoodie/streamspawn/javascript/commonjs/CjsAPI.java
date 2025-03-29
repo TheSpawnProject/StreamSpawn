@@ -1,7 +1,7 @@
 package net.programmer.igoodie.streamspawn.javascript.commonjs;
 
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
-import net.programmer.igoodie.streamspawn.javascript.base.GlobalAPI;
+import net.programmer.igoodie.streamspawn.javascript.base.ScopeInstallable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.commonjs.module.ModuleScriptProvider;
@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CjsAPI implements GlobalAPI {
+public class CjsAPI implements ScopeInstallable {
 
     protected Map<String, IntrinsicModule> intrinsicModules = new ConcurrentHashMap<>();
 

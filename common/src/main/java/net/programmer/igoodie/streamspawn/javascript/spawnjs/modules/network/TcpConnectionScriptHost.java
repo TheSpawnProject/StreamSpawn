@@ -1,7 +1,8 @@
-package net.programmer.igoodie.streamspawn.javascript.spawnjs.network.hosts;
+package net.programmer.igoodie.streamspawn.javascript.spawnjs.modules.network;
 
 import net.programmer.igoodie.goodies.util.accessor.ArrayAccessor;
 import net.programmer.igoodie.streamspawn.javascript.base.IntrinsicService;
+import net.programmer.igoodie.streamspawn.javascript.spawnjs.SpawnJSExceptions;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
@@ -59,7 +60,7 @@ public class TcpConnectionScriptHost extends IntrinsicService {
             }
         }
 
-        throw createInvalidArgumentsException(new TcpConnectionScriptHost(), args, ctor);
+        throw SpawnJSExceptions.invalidArguments(new TcpConnectionScriptHost(), args, ctor);
     }
 
     @Override
@@ -98,7 +99,7 @@ public class TcpConnectionScriptHost extends IntrinsicService {
             if (arg1 instanceof Function listener) {
                 try {
                     Event event = Event.valueOf(eventName.toUpperCase());
-                    Listener eventListener = hostObj.bindListener(listener);
+                    Listener eventListener = hostObj.makeCoercible(listener);
                     hostObj.getListeners(event).add(eventListener);
                     return;
                 } catch (Exception ignored) {
@@ -107,7 +108,7 @@ public class TcpConnectionScriptHost extends IntrinsicService {
             }
         }
 
-        throw createInvalidArgumentsException(thisObj, args, function);
+        throw SpawnJSExceptions.invalidArguments(thisObj, args, function);
     }
 
     @Override
@@ -187,6 +188,7 @@ public class TcpConnectionScriptHost extends IntrinsicService {
 
 }
 
+// TODO: Extract to a test context instead
 class BinaryTCPServer {
 
     private static final Charset CUSTOM_CHARSET = StandardCharsets.ISO_8859_1; // Example charset

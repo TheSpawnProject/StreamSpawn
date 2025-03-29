@@ -1,12 +1,12 @@
 package net.programmer.igoodie.streamspawn.javascript.spawnjs.globals;
 
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
-import net.programmer.igoodie.streamspawn.javascript.base.GlobalAPI;
+import net.programmer.igoodie.streamspawn.javascript.base.ScopeInstallable;
 import org.mozilla.javascript.*;
 
 import java.util.*;
 
-public class TimerAPI implements GlobalAPI {
+public class TimerAPI implements ScopeInstallable {
 
     public void install(ScriptableObject scope) {
         scope.defineProperty("setTimeout", new SetTimeout(), ScriptableObject.CONST);
@@ -45,7 +45,7 @@ public class TimerAPI implements GlobalAPI {
     }
 
     /**
-     * <h1>Syntax</h1>
+     * <h1>Supported Syntax</h1>
      * <pre>{@code
      * ❌ setTimeout(code)
      * ❌ setTimeout(code, delay)
@@ -78,7 +78,7 @@ public class TimerAPI implements GlobalAPI {
     }
 
     /**
-     * <h1>Syntax</h1>
+     * <h1>Supported Syntax</h1>
      * <pre>{@code
      * ❌ setInterval(code)
      * ❌ setInterval(code, delay)
@@ -111,7 +111,7 @@ public class TimerAPI implements GlobalAPI {
     }
 
     /**
-     * <h1>Syntax</h1>
+     * <h1>Supported Syntax</h1>
      * <pre>{@code
      * ✅ clearTimeout(timeoutID)
      * ✅ clearInterval(intervalID)

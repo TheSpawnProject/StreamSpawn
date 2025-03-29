@@ -1,9 +1,10 @@
-package net.programmer.igoodie.streamspawn.javascript.spawnjs.network.hosts;
+package net.programmer.igoodie.streamspawn.javascript.spawnjs.modules.network;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
-import net.programmer.igoodie.streamspawn.javascript.base.IntrinsicService;
+import net.programmer.igoodie.streamspawn.javascript.coercer.CoercibleFunction;
+import net.programmer.igoodie.streamspawn.javascript.service.ScriptService;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.annotations.JSConstructor;
 import org.mozilla.javascript.annotations.JSFunction;
@@ -14,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 // TODO: Support SIOv1, SIOv2, SIOv3 and SIOv4
-public class SocketIOScriptHost extends IntrinsicService {
+public class SocketIOScriptHost extends ScriptService {
 
     protected URI url;
     protected Socket socket;
@@ -53,7 +54,8 @@ public class SocketIOScriptHost extends IntrinsicService {
 
     @JSFunction
     public void on(String eventName, Function callback) {
-        this.listeners.put(eventName, args -> bindListener(callback).call(args));
+        CoercibleFunction listener = CoercibleFunction.makeCoercible(this.getParentScope(), callback);
+        this.listeners.put(eventName, listener::call);
     }
 
     @JSFunction
@@ -65,14 +67,14 @@ public class SocketIOScriptHost extends IntrinsicService {
     }
 
     @Override
-    public void begin() {
+    public void beginImpl() {
         this.socket = IO.socket(url, options);
         listeners.forEach((eventName, listener) -> this.socket.on(eventName, listener));
         this.socket.connect();
     }
 
     @Override
-    public void terminate() {
+    public void terminateImpl() {
         this.socket.disconnect();
         this.socket.close();
         this.socket = null;

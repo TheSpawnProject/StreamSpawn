@@ -2,11 +2,9 @@ package net.programmer.igoodie.streamspawn.init;
 
 import net.programmer.igoodie.streamspawn.integration.base.Integration;
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
-import net.programmer.igoodie.streamspawn.javascript.base.IntrinsicService;
-import net.programmer.igoodie.streamspawn.javascript.global.EmitFn;
 import net.programmer.igoodie.streamspawn.javascript.global.RegisterServiceFn;
+import net.programmer.igoodie.streamspawn.javascript.service.ScriptService;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.SpawnJS;
-import net.programmer.igoodie.streamspawn.javascript.spawnjs.globals.ServiceAPI;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ScriptableObject;
 
@@ -22,12 +20,12 @@ public class ModIntegrations {
 
         // TODO: Migrate those:
         globalScope.defineProperty("registerService", new RegisterServiceFn(INTEGRATION_REGISTRY), ScriptableObject.CONST);
-        globalScope.defineProperty("emit", new EmitFn(), ScriptableObject.CONST);
         JavascriptEngine.eval(globalScope, "stopIntegration = console.log");
 
 
         try {
             Integration integration = new Integration("test-streamlabs", "1.0.0");
+
 //            integration.downloadScript("https://pastebin.com/raw/B1J0kQym");
 //            integration.loadScript("" +
 //                    "new Promise((resolve) => {\n" +
@@ -44,30 +42,47 @@ public class ModIntegrations {
 //                    "   .then(res => { throw new Error('Wopsie') })" +
 //                    "   .catch(err => print('Omg an error', err.getValue()));");
             integration.loadScript("""
-                        const { TcpConnection, Buffer } = require("spawnjs:network");
-                        const tcp = new TcpConnection("127.0.0.1", 8080);
-                        Buffer.alloc(16);
-                        
-//                    console.log(ServiceSymbols.beginService);
-//                    console.log(ServiceSymbols.terminateService);
-//
-//                    const myInstance = {
-//                        [ServiceSymbols.beginService]: () => console.log("Begin!")
-//                    }
-//
-//                    console.log(myInstance)
-//                    console.log(myInstance[ServiceSymbols.beginService]())
-//
-//                    myInstance;
+                    "use strict";
+//                    Object.defineProperty(exports, "__esModule", { value: true });
+                    const spawnjs_network_1 = require("spawnjs:network");
+                    const sio = new spawnjs_network_1.SocketIO("https://sockets.streamlabs.com");
+                    const x = 5;
+                    sio.addServiceListener("service-starting", () => {
+                        console.log("Lifecycle, service starting.")
+                    });
+                    sio.on("error", (error) => {
+                        console.log("Error!", error);
+                        stopIntegration("Stopping because of an error: " + error);
+                    });
+                    sio.on("connect", () => {
+                        sio.socket.emit("ping", [], () => console.log("pong"));
+                        console.log("Connected!", x);
+                        setTimeout(() => console.log("Connected 5 seconds before this!"), 5000);
+                    });
+                    sio.on("disconnect", () => {
+                        console.log("Disconnected!");
+                        stopIntegration("Disconnected");
+                    });
+                    sio.on("event", (data) => {
+                        var _a;
+                        const eventType = data.type;
+                        const eventFor = data.for;
+                        const message = (_a = data.message[0]) !== null && _a !== void 0 ? _a : data.message;
+                        console.log(eventType, eventFor, message);
+                        emit("Twitch Follow", {
+                            foo: "bar",
+                            mods: [1, 2, 3, "admin"],
+                        });
+                    });
+                    registerService(sio);
                     """);
             INTEGRATION_REGISTRY.put(integration.getName(), integration);
             ScriptableObject integrationScope = integration.createScope(globalScope);
             Object result = integration.getScript().exec(JavascriptEngine.CONTEXT.get(), integrationScope);
 
             System.out.println(result.getClass());
-            System.out.println(ServiceAPI.isService(((ScriptableObject) result)));
 
-            integration.services.forEach(IntrinsicService::begin);
+            integration.services.forEach(ScriptService::begin);
 
         } catch (Exception e) {
             throw new RuntimeException(e);

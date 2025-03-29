@@ -10,13 +10,17 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Objects;
 
+/**
+ * Carbon-copy of ScriptableObject::defineClass,
+ * because I'm way too lazy implementing mixins lol
+ */
 public class ClassDefiner {
 
     private static boolean sawSecurityException;
 
     public static <T extends Scriptable> String defineClass(Scriptable scope, Class<T> clazz, boolean sealed, boolean mapInheritance) {
         try {
-            BaseFunction ctor = ClassDefiner.buildClassCtor(scope, clazz, true, false);
+            BaseFunction ctor = ClassDefiner.buildClassCtor(scope, clazz, sealed, mapInheritance);
             String name = getClassPrototype(ctor).getClassName();
             ScriptableObject.defineProperty(scope, name, ctor, ScriptableObject.DONTENUM);
             return name;
@@ -87,7 +91,7 @@ public class ClassDefiner {
                     && !Modifier.isAbstract(superClass.getModifiers())) {
                 Class<? extends Scriptable> superScriptable = extendsScriptable(superClass);
                 String name =
-                        ScriptableObject.defineClass(
+                        ClassDefiner.defineClass(
                                 scope, superScriptable, sealed, mapInheritance);
                 if (name != null) {
                     superProto = ScriptableObject.getClassPrototype(scope, name);

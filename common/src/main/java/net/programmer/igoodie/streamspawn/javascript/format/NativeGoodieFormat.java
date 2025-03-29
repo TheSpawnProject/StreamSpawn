@@ -1,4 +1,4 @@
-package net.programmer.igoodie.streamspawn.javascript.util;
+package net.programmer.igoodie.streamspawn.javascript.format;
 
 import net.programmer.igoodie.goodies.exception.GoodieParseException;
 import net.programmer.igoodie.goodies.exception.YetToBeImplementedException;
