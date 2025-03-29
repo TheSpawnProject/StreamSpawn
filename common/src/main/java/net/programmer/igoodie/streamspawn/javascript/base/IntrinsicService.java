@@ -1,7 +1,6 @@
 package net.programmer.igoodie.streamspawn.javascript.base;
 
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
-import net.programmer.igoodie.streamspawn.javascript.coercer.JavascriptCoercer;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
@@ -25,7 +24,7 @@ public abstract class IntrinsicService extends ScriptHost {
         return (args) -> {
             Context cx = JavascriptEngine.CONTEXT.get();
             Object[] coercedArgs = Arrays.stream(args)
-                    .map(JavascriptCoercer::coerce)
+                    .map(JavascriptEngine::coerce)
                     .toArray();
             callback.call(cx, scope, null, coercedArgs);
         };

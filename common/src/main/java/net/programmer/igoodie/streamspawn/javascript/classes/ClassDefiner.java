@@ -15,15 +15,11 @@ public class ClassDefiner {
     private static boolean sawSecurityException;
 
     public static <T extends Scriptable> String defineClass(Scriptable scope, Class<T> clazz, boolean sealed, boolean mapInheritance) {
-        BaseFunction ctor = ClassDefiner.createClass(scope, clazz, true, false);
-        String name = getClassPrototype(ctor).getClassName();
-        ScriptableObject.defineProperty(scope, name, ctor, ScriptableObject.DONTENUM);
-        return name;
-    }
-
-    public static <T extends Scriptable> BaseFunction createClass(Scriptable scope, Class<T> clazz, boolean sealed, boolean mapInheritance) {
         try {
-            return buildClassCtor(scope, clazz, sealed, mapInheritance);
+            BaseFunction ctor = ClassDefiner.buildClassCtor(scope, clazz, true, false);
+            String name = getClassPrototype(ctor).getClassName();
+            ScriptableObject.defineProperty(scope, name, ctor, ScriptableObject.DONTENUM);
+            return name;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

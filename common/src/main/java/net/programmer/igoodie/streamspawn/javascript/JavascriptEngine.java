@@ -1,6 +1,9 @@
 package net.programmer.igoodie.streamspawn.javascript;
 
+import net.programmer.igoodie.goodies.registry.Registry;
 import net.programmer.igoodie.streamspawn.javascript.base.ScriptHost;
+import net.programmer.igoodie.streamspawn.javascript.coercer.Coercer;
+import net.programmer.igoodie.streamspawn.javascript.coercer.JSONCoercer;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -20,6 +23,11 @@ public class JavascriptEngine {
         cx.seal(lock);
         return cx;
     });
+
+    public static final Registry<Class<?>, Coercer<?, ?>> COERCERS = new Registry<>(
+            JSONCoercer.Object.INSTANCE,
+            JSONCoercer.Array.INSTANCE
+    );
 
     private static <V> V unsafe_useContext(Function<Context, V> consumer) {
         Context cx = CONTEXT.get();
@@ -54,6 +62,13 @@ public class JavascriptEngine {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static <T> Object coerce(T value) {
+        @SuppressWarnings("unchecked")
+        Coercer<T, ?> coercer = (Coercer<T, ?>) COERCERS.get(value.getClass());
+        if (coercer == null) return value;
+        return coercer.coerceValue(value);
     }
 
     public static Object eval(ScriptableObject scope, String source) {
