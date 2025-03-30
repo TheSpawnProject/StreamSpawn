@@ -5,9 +5,8 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 
-import java.util.Arrays;
-
 @FunctionalInterface
+@Deprecated
 public interface CoercibleFunction {
 
     void call(Object... args);
@@ -23,9 +22,7 @@ public interface CoercibleFunction {
     static CoercibleFunction makeCoercible(Scriptable scope, Function callback) {
         return (args) -> {
             Context cx = JavascriptEngine.CONTEXT.get();
-            callback.call(cx, scope, null, Arrays.stream(args)
-                    .map(JavascriptEngine::coerce)
-                    .toArray());
+            callback.call(cx, scope, null, args);
         };
     }
 
