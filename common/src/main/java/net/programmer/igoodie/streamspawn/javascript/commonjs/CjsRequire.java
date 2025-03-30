@@ -9,9 +9,9 @@ import org.mozilla.javascript.commonjs.module.Require;
 
 public class CjsRequire extends Require {
 
-    protected final CjsAPI cjs;
+    protected final CommonJS cjs;
 
-    public CjsRequire(CjsAPI cjs, Context cx, Scriptable nativeScope, ModuleScriptProvider moduleScriptProvider, Script preExec, Script postExec, boolean sandboxed) {
+    public CjsRequire(CommonJS cjs, Context cx, Scriptable nativeScope, ModuleScriptProvider moduleScriptProvider, Script preExec, Script postExec, boolean sandboxed) {
         super(cx, nativeScope, moduleScriptProvider, preExec, postExec, sandboxed);
         this.cjs = cjs;
     }
@@ -22,9 +22,9 @@ public class CjsRequire extends Require {
             throw ScriptRuntime.throwError(cx, scope, "require() needs one argument");
         }
 
-        String id = (String) Context.jsToJava(args[0], String.class);
+        String moduleId = (String) Context.jsToJava(args[0], String.class);
 
-        IntrinsicModule intrinsicModule = cjs.intrinsicModules.get(id);
+        IntrinsicModule intrinsicModule = cjs.intrinsicModules.get(moduleId);
 
         if (intrinsicModule != null) {
             if (!intrinsicModule.isLoaded()) {

@@ -13,7 +13,7 @@ import org.mozilla.javascript.ScriptableObject;
 public class NetworkModule extends IntrinsicModule {
 
     @Override
-    public String moduleName() {
+    public String moduleId() {
         return "spawnjs:network";
     }
 

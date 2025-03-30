@@ -11,7 +11,7 @@ public abstract class IntrinsicModule {
 
     protected ModuleScope moduleScope;
 
-    public abstract String moduleName();
+    public abstract String moduleId();
 
     public abstract void buildExports(ScriptableObject exports);
 
@@ -21,11 +21,12 @@ public abstract class IntrinsicModule {
 
     public void load() {
         ScriptableObject scope = JavascriptEngine.createObject();
+
         this.buildExports(scope);
 
         try {
             // TODO: Standardize this, perhaps to Config folder? OR make it a config
-            File modulesDir = new File(Objects.requireNonNull(CjsAPI.class.getClassLoader()
+            File modulesDir = new File(Objects.requireNonNull(CommonJS.class.getClassLoader()
                     .getResource("assets/streamspawn/spawnjs")).toURI()).getCanonicalFile();
             this.moduleScope = new ModuleScope(scope, modulesDir.toURI(), modulesDir.toURI());
 

@@ -12,6 +12,7 @@ import org.mozilla.javascript.annotations.JSFunction;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class ScriptService extends ScriptHost implements ScriptServiceImpl {
 
     protected List<CoercibleFunction> onStartCallback = new ArrayList<>();

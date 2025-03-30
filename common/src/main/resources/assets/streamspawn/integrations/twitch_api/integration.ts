@@ -1,30 +1,39 @@
 import { Websocket } from "spawnjs:network";
+// import { registerService, Service } from "streamspawn:services";
 
 // console.log(Websocket.State.OPEN.name());
 
-const twitchService = new Websocket("wss://eventsub.wss.twitch.tv/ws");
+const eventsubWs = new Websocket("wss://eventsub.wss.twitch.tv/ws");
 
-twitchService.addServiceListener("service-starting", () => {
+eventsubWs.addServiceListener("service-starting", () => {
   console.log("Service starting");
-  console.log("State =", twitchService.socket.getState().name() + "");
+  console.log("State =", eventsubWs.socket.getState().name() + "");
 });
 
-twitchService.on("connected", (handshake) => {
+eventsubWs.on("connected", (handshake) => {
   console.log("Connected", handshake);
 });
 
-twitchService.on("message", (data) => {
+eventsubWs.on("message", (data) => {
   console.log(
     "Got msg; State =",
-    twitchService.socket.getState().name(),
+    eventsubWs.socket.getState().name(),
     JSON.parse(data)
   );
 });
 
-twitchService.on("error", (type, message) => {
+eventsubWs.on("error", (type, message) => {
   console.log("Error..", type, message);
 });
 
-twitchService.on("disconnected", console.log);
+eventsubWs.on("disconnected", console.log);
 
-registerService(twitchService);
+registerService(eventsubWs);
+
+// const twitchService = new Service({
+//   begin: () => eventsubWs.connect(),
+//   terminate: () => eventsubWs.disconnect(),
+// });
+
+// registerService(twitchService);
+

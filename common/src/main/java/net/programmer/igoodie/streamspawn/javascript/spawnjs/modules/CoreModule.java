@@ -8,7 +8,7 @@ import org.mozilla.javascript.ScriptableObject;
 public class CoreModule extends IntrinsicModule {
 
     @Override
-    public String moduleName() {
+    public String moduleId() {
         return "spawnjs:core";
     }
 

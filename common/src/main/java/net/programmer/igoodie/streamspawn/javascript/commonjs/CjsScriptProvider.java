@@ -5,9 +5,9 @@ import org.mozilla.javascript.commonjs.module.provider.StrongCachingModuleScript
 
 public class CjsScriptProvider extends StrongCachingModuleScriptProvider {
 
-    protected final CjsAPI cjs;
+    protected final CommonJS cjs;
 
-    public CjsScriptProvider(CjsAPI cjs, ModuleSourceProvider moduleSourceProvider) {
+    public CjsScriptProvider(CommonJS cjs, ModuleSourceProvider moduleSourceProvider) {
         super(moduleSourceProvider);
         this.cjs = cjs;
     }
