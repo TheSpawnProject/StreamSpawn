@@ -18,4 +18,5 @@ dependencies {
     implementation 'com.github.TheSpawnProject:TheSpawnLanguage:v1.5.1-alpha3'
     implementation 'org.mozilla:rhino:1.8.0'
     implementation "io.socket:socket.io-client:1.0.0"
+    implementation 'org.java-websocket:Java-WebSocket:1.6.0'
 }
