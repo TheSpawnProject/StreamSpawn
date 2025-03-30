@@ -5,11 +5,17 @@ declare namespace Websocket {
     handshakeHeaders: Record<string, string>;
   }
 
-  interface Socket extends JavaBackedObject {
-    // TODO
+  class Socket implements NativeJavaObject {
+    send(bytes: number[]): void;
+    send(text: string): void;
+    sendPing(): void;
+
+    getReadyState(): ReadyState;
   }
 
-  type EventName = "open" | "message" | "message_buffer" | "close" | "error";
+  class ReadyState extends JavaEnum<
+    "NOT_YET_CONNECTED" | "OPEN" | "CLOSING" | "CLOSED"
+  > {}
 
   interface EventMap {
     open: () => void;

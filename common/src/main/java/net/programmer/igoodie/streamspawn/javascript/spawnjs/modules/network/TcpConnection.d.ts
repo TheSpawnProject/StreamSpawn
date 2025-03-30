@@ -1,5 +1,5 @@
 declare namespace NativeTcp {
-  interface Socket extends JavaBackedObject {
+  interface Socket extends NativeJavaObject {
     setKeepalive(on: boolean): void;
     setOOBInline(on: boolean): void;
     // setOption

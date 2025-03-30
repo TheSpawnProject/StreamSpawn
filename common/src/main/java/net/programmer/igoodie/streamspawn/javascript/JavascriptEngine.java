@@ -21,6 +21,7 @@ public class JavascriptEngine {
 //        cx.setInterpretedMode(true);
 //        cx.setMaximumInterpreterStackDepth(255);
         cx.setLanguageVersion(Context.VERSION_ES6);
+        cx.setWrapFactory(new JavascriptWrapFactory());
         Object lock = LOCK.get();
         cx.seal(lock);
         return cx;

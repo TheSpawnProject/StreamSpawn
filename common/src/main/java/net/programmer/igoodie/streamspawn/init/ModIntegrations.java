@@ -38,7 +38,7 @@ public class ModIntegrations {
             ScriptableObject integrationScope = integration.createScope(globalScope);
             Object result = integration.getScript().exec(JavascriptEngine.CONTEXT.get(), integrationScope);
 
-            System.out.println(result.getClass());
+            System.out.println("Executed integration, result = " + result);
 
             integration.services.forEach(ScriptService::begin);
 

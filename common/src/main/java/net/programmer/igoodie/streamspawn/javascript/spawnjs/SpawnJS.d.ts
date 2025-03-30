@@ -1,3 +1,5 @@
+/// <reference path="./SpawnEnv.d.ts"/>
+
 /// <reference path="./globals/TslAPI.d.ts"/>
 /// <reference path="./globals/ServiceAPI.d.ts"/>
 /// <reference path="./globals/ConsoleAPI.d.ts"/>
@@ -15,9 +17,5 @@ declare const integration: {
 };
 
 declare const integrationConfig: any;
-
-declare interface JavaBackedObject {
-  [field: string]: any;
-}
 
 declare function stopIntegration(reason: string): void;

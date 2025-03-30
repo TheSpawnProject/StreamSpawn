@@ -6,6 +6,7 @@ import net.programmer.igoodie.streamspawn.javascript.util.Listeners;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.enums.ReadyState;
 import org.java_websocket.handshake.ServerHandshake;
+import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.annotations.JSConstructor;
 import org.mozilla.javascript.annotations.JSFunction;
@@ -41,8 +42,8 @@ public class WebsocketHost extends ScriptService {
     }
 
     @JSGetter
-    public Socket getSocket() {
-        return this.socket;
+    public Object getSocket() {
+        return Context.javaToJS(this.socket, this.getParentScope());
     }
 
     @JSGetter
