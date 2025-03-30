@@ -1,12 +1,12 @@
 package net.programmer.igoodie.streamspawn.javascript.spawnjs.modules;
 
+import com.neovisionaries.ws.client.WebSocketState;
 import net.programmer.igoodie.streamspawn.javascript.classes.ClassDefiner;
 import net.programmer.igoodie.streamspawn.javascript.commonjs.IntrinsicModule;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.modules.network.BufferHost;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.modules.network.SocketIOHost;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.modules.network.TcpConnectionHost;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.modules.network.WebsocketHost;
-import org.java_websocket.enums.ReadyState;
 import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.ScriptableObject;
 
@@ -24,7 +24,7 @@ public class NetworkModule extends IntrinsicModule {
         ClassDefiner.defineClass(exports, SocketIOHost.class, true, true);
 
         BaseFunction websocket = ClassDefiner.defineClass(exports, WebsocketHost.class, false, true).getRight();
-        ClassDefiner.defineEnum(websocket, ReadyState.class);
+        ClassDefiner.defineEnum(websocket, "State", WebSocketState.class);
         websocket.sealObject();
     }
 

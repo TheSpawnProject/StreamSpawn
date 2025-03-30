@@ -1,30 +1,30 @@
 package net.programmer.igoodie.streamspawn.javascript.spawnjs.modules.network;
 
+import com.neovisionaries.ws.client.*;
 import net.programmer.igoodie.streamspawn.javascript.coercer.CoercibleFunction;
+import net.programmer.igoodie.streamspawn.javascript.coercer.JavaUtilCoercer;
 import net.programmer.igoodie.streamspawn.javascript.service.ScriptService;
 import net.programmer.igoodie.streamspawn.javascript.util.Listeners;
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.enums.ReadyState;
-import org.java_websocket.handshake.ServerHandshake;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.annotations.JSConstructor;
 import org.mozilla.javascript.annotations.JSFunction;
 import org.mozilla.javascript.annotations.JSGetter;
 
+import java.io.IOException;
 import java.net.URI;
-import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class WebsocketHost extends ScriptService {
 
     protected URI url;
-    protected Socket socket;
+    protected WebSocket socket;
     protected Options options;
 
     // TODO: Integrate, once Wutax releases Interlude
-    protected Listeners<Socket.Event, Listeners.GenericListener> listeners = new Listeners<>();
+    protected Listeners<Event, Listeners.GenericListener> listeners = new Listeners<>();
 
     @Override
     public String getClassName() {
@@ -53,87 +53,94 @@ public class WebsocketHost extends ScriptService {
 
     @JSFunction
     public void on(String eventName, Function callback) {
-        Socket.Event event = Socket.Event.valueOf(eventName.toUpperCase());
+        Event event = Event.valueOf(eventName.toUpperCase());
         CoercibleFunction listener = CoercibleFunction.makeCoercible(this.getParentScope(), callback);
         this.listeners.subscribe(event, listener::call);
     }
 
     @Override
     public void beginImpl() {
-        this.socket = new Socket(this.url, this.options);
+        WebSocketFactory factory = new WebSocketFactory();
 
-        if (this.options.reuseAddr)
-            this.socket.setReuseAddr(true);
-        if (this.options.tcpNoDelay)
-            this.socket.setTcpNoDelay(true);
+        factory.setConnectionTimeout(this.options.connectionTimeout);
+        factory.setSocketTimeout(this.options.socketTimeout);
 
-        this.socket.connect();
+        try {
+            this.socket = factory.createSocket(this.url);
+
+            this.options.handshakeHeaders.forEach(this.socket::addHeader);
+
+            this.socket.addListener(new Listener());
+
+            this.socket.connectAsynchronously();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void terminateImpl() {
-        if (this.socket.getReadyState() == ReadyState.OPEN) {
-            this.socket.close();
+        if (this.socket.getState() == WebSocketState.OPEN) {
+            this.socket.disconnect();
         }
     }
 
-    public class Socket extends WebSocketClient {
-
-        public Socket(URI serverUri, WebsocketHost.Options options) {
-            super(serverUri, options.handshakeHeaders);
-        }
+    public class Listener extends WebSocketAdapter {
 
         @Override
-        public void onOpen(ServerHandshake serverHandshake) {
-            WebsocketHost.this.listeners.invoke(Event.OPEN, l -> l.call(
-                    serverHandshake
+        public void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
+            WebsocketHost.this.listeners.invoke(Event.CONNECTED, l -> l.call(
+                    JavaUtilCoercer.Map.INSTANCE.coerceValue(headers, WebsocketHost.this.getParentScope())
             ));
         }
 
         @Override
-        public void onMessage(String message) {
+        public void onTextMessage(WebSocket websocket, String text) {
             WebsocketHost.this.listeners.invoke(Event.MESSAGE, l -> l.call(
-                    message
+                    text
             ));
         }
 
         @Override
-        public void onMessage(ByteBuffer bytes) {
+        public void onTextMessage(WebSocket websocket, byte[] data) {
             WebsocketHost.this.listeners.invoke(Event.MESSAGE_BUFFER, l -> l.call(
-                    bytes
+                    new BufferHost(data)
             ));
         }
 
         @Override
-        public void onClose(int code, String reason, boolean remote) {
-            WebsocketHost.this.listeners.invoke(Event.CLOSE, l -> l.call(
-                    code, reason, remote
+        public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) {
+            int closeCode = serverCloseFrame.getCloseCode();
+            String closeReason = serverCloseFrame.getCloseReason();
+            WebsocketHost.this.listeners.invoke(Event.DISCONNECTED, l -> l.call(
+                    closeCode, closeReason, closedByServer
             ));
         }
 
         @Override
-        public void onError(Exception e) {
+        public void onError(WebSocket websocket, WebSocketException cause) {
             WebsocketHost.this.listeners.invoke(Event.ERROR, l -> l.call(
-                    e.getClass().getSimpleName(), e.getMessage()
+                    cause.getClass().getSimpleName(), cause.getMessage()
             ));
-        }
-
-        public enum Event {
-            OPEN,
-            MESSAGE,
-            MESSAGE_BUFFER,
-            CLOSE,
-            ERROR
         }
 
     }
 
     public static class Options {
 
-        public boolean reuseAddr = false;
-        public boolean tcpNoDelay = false;
+        public int connectionTimeout = 0;
+        public int socketTimeout = 0;
         public Map<String, String> handshakeHeaders = new HashMap<>();
 
+    }
+
+    public enum Event {
+        CONNECTED,
+        MESSAGE,
+        MESSAGE_BUFFER,
+        DISCONNECTED,
+        ERROR
     }
 
 }

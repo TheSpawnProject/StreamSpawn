@@ -30,9 +30,8 @@ public class ClassDefiner {
         }
     }
 
-    public static <T extends Enum<T>> Pair<String, NativeObject> defineEnum(ScriptableObject scope, Class<T> clazz) {
+    public static <T extends Enum<T>> Pair<String, NativeObject> defineEnum(ScriptableObject scope, String name,Class<T> clazz) {
         NativeObject enumObject = new NativeObject();
-        String name = clazz.getSimpleName();
 
         for (T enumConstant : clazz.getEnumConstants()) {
             ScriptableObject.defineProperty(enumObject, enumConstant.name(), enumConstant, ScriptableObject.EMPTY);

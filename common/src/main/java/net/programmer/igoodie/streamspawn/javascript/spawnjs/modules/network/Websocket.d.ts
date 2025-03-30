@@ -1,7 +1,7 @@
 declare namespace Websocket {
   interface Options {
-    reuseAddr: boolean;
-    tcpNoDelay: boolean;
+    connectionTimeout: number;
+    socketTimeout: number;
     handshakeHeaders: Record<string, string>;
   }
 
@@ -10,23 +10,18 @@ declare namespace Websocket {
     send(text: string): void;
     sendPing(): void;
 
-    getReadyState(): Java.EnumConstant<ReadyState>;
+    getState(): Java.EnumConstant<State>;
   }
 
-  interface ServerHandshake extends Java.NativeObject {
-    getHttpStatus(): number;
-    getHttpStatusMessage(): string;
-  }
-
-  type ReadyState = Java.Enum<
-    "NOT_YET_CONNECTED" | "OPEN" | "CLOSING" | "CLOSED"
+  type State = Java.Enum<
+    "CREATED" | "CONNECTING" | "OPEN" | "CLOSING" | "CLOSED"
   >;
 
   interface EventMap {
-    open: (handshake: ServerHandshake) => void;
+    connected: (handshake: any) => void;
     message: (msg: string) => void;
     message_buffer: (msg: import("spawnjs:network").Buffer) => void;
-    close: (code: number, reason: string, remote: boolean) => void;
+    disconnected: (code: number, reason: string, remote: boolean) => void;
     error: (type: string, message: string) => void;
   }
 }
