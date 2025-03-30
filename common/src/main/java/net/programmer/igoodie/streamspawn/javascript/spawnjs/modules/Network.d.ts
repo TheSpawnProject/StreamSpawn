@@ -6,6 +6,8 @@ declare module "spawnjs:network" {
   export class Websocket extends Service {
     constructor(url: string);
 
+    static ReadyState: Websocket.ReadyState;
+
     get socket(): Websocket.Socket;
     get options(): Websocket.Options;
 

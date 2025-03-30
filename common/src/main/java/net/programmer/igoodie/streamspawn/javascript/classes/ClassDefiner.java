@@ -18,15 +18,27 @@ public class ClassDefiner {
 
     private static boolean sawSecurityException;
 
-    public static <T extends Scriptable> String defineClass(Scriptable scope, Class<T> clazz, boolean sealed, boolean mapInheritance) {
+    public static <T extends Scriptable> BaseFunction defineClass(Scriptable scope, Class<T> clazz, boolean sealed, boolean mapInheritance) {
         try {
             BaseFunction ctor = ClassDefiner.buildClassCtor(scope, clazz, sealed, mapInheritance);
             String name = getClassPrototype(ctor).getClassName();
             ScriptableObject.defineProperty(scope, name, ctor, ScriptableObject.DONTENUM);
-            return name;
+            return ctor;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static <T extends Enum<T>> String defineEnum(Scriptable scope, Class<T> clazz) {
+        NativeObject object = new NativeObject();
+        String name = clazz.getSimpleName();
+
+        for (T enumConstant : clazz.getEnumConstants()) {
+            ScriptableObject.defineProperty(object, enumConstant.name(), enumConstant, ScriptableObject.CONST);
+        }
+
+        ScriptableObject.defineProperty(scope, name, object, ScriptableObject.CONST);
+        return name;
     }
 
     protected static <T extends Scriptable> BaseFunction buildClassCtor(Scriptable scope, Class<T> clazz, boolean sealed, boolean mapInheritance)

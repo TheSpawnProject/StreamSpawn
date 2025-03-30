@@ -5,20 +5,25 @@ declare namespace Websocket {
     handshakeHeaders: Record<string, string>;
   }
 
-  class Socket implements NativeJavaObject {
+  class Socket implements Java.NativeObject {
     send(bytes: number[]): void;
     send(text: string): void;
     sendPing(): void;
 
-    getReadyState(): ReadyState;
+    getReadyState(): Java.EnumConstant<ReadyState>;
   }
 
-  class ReadyState extends JavaEnum<
+  interface ServerHandshake extends Java.NativeObject {
+    getHttpStatus(): number;
+    getHttpStatusMessage(): string;
+  }
+
+  type ReadyState = Java.Enum<
     "NOT_YET_CONNECTED" | "OPEN" | "CLOSING" | "CLOSED"
-  > {}
+  >;
 
   interface EventMap {
-    open: () => void;
+    open: (handshake: ServerHandshake) => void;
     message: (msg: string) => void;
     message_buffer: (msg: import("spawnjs:network").Buffer) => void;
     close: (code: number, reason: string, remote: boolean) => void;

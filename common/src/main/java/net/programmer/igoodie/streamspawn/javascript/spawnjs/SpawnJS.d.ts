@@ -1,4 +1,4 @@
-/// <reference path="./SpawnEnv.d.ts"/>
+/// <reference path="./SpawnJava.d.ts"/>
 
 /// <reference path="./globals/TslAPI.d.ts"/>
 /// <reference path="./globals/ServiceAPI.d.ts"/>

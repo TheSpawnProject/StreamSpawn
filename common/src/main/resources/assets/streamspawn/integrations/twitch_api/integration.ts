@@ -1,6 +1,10 @@
 import { Websocket } from "spawnjs:network";
 
+console.log(Websocket.ReadyState.OPEN.name());
+
 const twitchService = new Websocket("wss://eventsub.wss.twitch.tv/ws");
+
+console.log(twitchService.options);
 
 twitchService.options.tcpNoDelay = true;
 
@@ -10,7 +14,8 @@ twitchService.addServiceListener("service-starting", () => {
   console.log("Service starting");
 });
 
-twitchService.on("open", () => {
+twitchService.on("open", (handshake) => {
+  console.log(handshake.getHttpStatus(), handshake.getHttpStatusMessage());
   console.log("Open");
 });
 
