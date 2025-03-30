@@ -5,14 +5,13 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import net.programmer.igoodie.streamspawn.javascript.coercer.CoercibleFunction;
 import net.programmer.igoodie.streamspawn.javascript.service.ScriptService;
+import net.programmer.igoodie.streamspawn.javascript.util.Listeners;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.annotations.JSConstructor;
 import org.mozilla.javascript.annotations.JSFunction;
 import org.mozilla.javascript.annotations.JSGetter;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 // TODO: Support SIOv1, SIOv2, SIOv3 and SIOv4
 public class SocketIOHost extends ScriptService {
@@ -22,7 +21,7 @@ public class SocketIOHost extends ScriptService {
     protected IO.Options options;
 
     // TODO: Refactor, once Wutax releases Interlude
-    protected Map<String, Emitter.Listener> listeners;
+    protected Listeners<String, Emitter.Listener> listeners = new Listeners<>();
 
     @Override
     public String getClassName() {
@@ -34,8 +33,6 @@ public class SocketIOHost extends ScriptService {
         options.forceNew = true;
         options.reconnection = true;
         options.transports = new String[]{"websocket"};
-
-        this.listeners = new HashMap<>();
     }
 
     @JSConstructor
@@ -57,15 +54,14 @@ public class SocketIOHost extends ScriptService {
     @JSFunction
     public void on(String eventName, Function callback) {
         CoercibleFunction listener = CoercibleFunction.makeCoercible(this.getParentScope(), callback);
-        this.listeners.put(eventName, listener::call);
+        this.listeners.subscribe(eventName, listener::call);
     }
 
     @JSFunction
     public void off(String eventName) {
-        if (this.listeners.containsKey(eventName)) {
-            this.listeners.remove(eventName);
-            this.socket.off(eventName);
-        }
+        // TODO: Also impl off(), off(eventName, listener)
+        this.listeners.unsubscribeAll(eventName);
+        this.socket.off(eventName);
     }
 
     @Override

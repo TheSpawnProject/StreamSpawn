@@ -1,7 +1,21 @@
-/// <reference path="./network/TcpClientHost.d.ts"/>
-/// <reference path="./network/SocketIOHost.d.ts"/>
+/// <reference path="./network/TcpConnection.d.ts"/>
+/// <reference path="./network/SocketIO.d.ts"/>
+/// <reference path="./network/Websocket.d.ts"/>
 
 declare module "spawnjs:network" {
+  export class Websocket extends Service {
+    constructor(url: string);
+
+    get socket(): Websocket.Socket;
+    get options(): Websocket.Options;
+
+    on<T extends keyof Websocket.EventMap>(
+      eventName: T,
+      listener: Websocket.EventMap[T]
+    ): void;
+    off(eventName: string): void;
+  }
+
   export class SocketIO extends Service {
     constructor(url: string);
 

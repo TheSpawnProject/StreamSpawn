@@ -1,12 +1,15 @@
 package net.programmer.igoodie.streamspawn.javascript;
 
 import net.programmer.igoodie.goodies.registry.Registry;
+import net.programmer.igoodie.streamspawn.javascript.coercer.BoxCoercer;
 import net.programmer.igoodie.streamspawn.javascript.coercer.Coercer;
 import net.programmer.igoodie.streamspawn.javascript.coercer.JSONCoercer;
+import net.programmer.igoodie.streamspawn.javascript.spawnjs.modules.network.BufferHost;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
+import java.nio.ByteBuffer;
 import java.util.function.Function;
 
 public class JavascriptEngine {
@@ -25,7 +28,8 @@ public class JavascriptEngine {
 
     public static final Registry<Class<?>, Coercer<?, ?>> COERCERS = new Registry<>(
             JSONCoercer.Object.INSTANCE,
-            JSONCoercer.Array.INSTANCE
+            JSONCoercer.Array.INSTANCE,
+            BoxCoercer.wrap(ByteBuffer.class, buf -> new BufferHost(buf.array()))
     );
 
     private static <V> V unsafe_useContext(Function<Context, V> consumer) {

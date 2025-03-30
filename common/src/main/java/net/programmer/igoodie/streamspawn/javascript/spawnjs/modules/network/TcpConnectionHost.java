@@ -4,6 +4,7 @@ import net.programmer.igoodie.goodies.util.accessor.ArrayAccessor;
 import net.programmer.igoodie.streamspawn.javascript.coercer.CoercibleFunction;
 import net.programmer.igoodie.streamspawn.javascript.service.ScriptService;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.SpawnJSExceptions;
+import net.programmer.igoodie.streamspawn.javascript.util.Listeners;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
@@ -18,10 +19,6 @@ import java.io.OutputStream;
 import java.net.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -35,7 +32,7 @@ public class TcpConnectionHost extends ScriptService {
     protected OutputStream outputStream;
     protected BufferHost buffer;
 
-    protected Map<Event, List<Listener>> listeners = new HashMap<>();
+    protected Listeners<Event, Listeners.GenericListener> listeners = new Listeners<>();
 
     protected final ExecutorService executor = Executors.newCachedThreadPool();
 
@@ -69,10 +66,6 @@ public class TcpConnectionHost extends ScriptService {
         return "TcpConnection";
     }
 
-    public List<Listener> getListeners(Event event) {
-        return this.listeners.computeIfAbsent(event, k -> new ArrayList<>());
-    }
-
     @JSGetter
     public Socket getUnderlyingSocket() {
         return this.socket;
@@ -101,7 +94,7 @@ public class TcpConnectionHost extends ScriptService {
                 try {
                     Event event = Event.valueOf(eventName.toUpperCase());
                     CoercibleFunction listener = CoercibleFunction.makeCoercible(thisObj.getParentScope(), cb);
-                    hostObj.getListeners(event).add(listener::call);
+                    hostObj.listeners.subscribe(event, listener::call);
                     return;
                 } catch (Exception ignored) {
                     throw new IllegalArgumentException("Invalid event name: " + eventName);
@@ -127,8 +120,9 @@ public class TcpConnectionHost extends ScriptService {
                         : netAddress instanceof Inet6Address ? 6
                         : -1;
 
-                this.getListeners(Event.LOOKUP).forEach(listener ->
-                        listener.call(type, netAddress.getHostAddress(), this.host));
+                this.listeners.invoke(Event.LOOKUP, l -> l.call(
+                        type, netAddress.getHostAddress(), this.host
+                ));
 
                 socket.connect(socketAddress);
                 inputStream = socket.getInputStream();
@@ -158,8 +152,9 @@ public class TcpConnectionHost extends ScriptService {
 
             } catch (Exception e) {
                 // TODO: Dispatch Event.TIMEOUT
-                this.getListeners(Event.ERROR).forEach(listener ->
-                        listener.call(e.getMessage()));
+                this.listeners.invoke(Event.ERROR, l -> l.call(
+                        e.getMessage()
+                ));
             }
         });
     }
@@ -185,10 +180,6 @@ public class TcpConnectionHost extends ScriptService {
         LOOKUP,
         READY,
         TIMEOUT
-    }
-
-    public interface Listener {
-        void call(Object... args);
     }
 
 }

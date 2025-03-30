@@ -1,10 +1,21 @@
-import { SocketIO } from "spawnjs:network";
+import { Websocket } from "spawnjs:network";
 
-const twitchService = new SocketIO("wss://eventsub.wss.twitch.tv/ws");
+const twitchService = new Websocket("wss://eventsub.wss.twitch.tv/ws");
 
-twitchService.options.transports = ["websocket", "polling"];
-twitchService.options.query = `token=${integrationConfig.jwt}`
+twitchService.options.tcpNoDelay = true;
 
-twitchService.on("message", (data) => console.log(data));
+twitchService.on("open", () => {
+  console.log("Open");
+});
+
+twitchService.on("message", (data) => {
+  console.log(JSON.parse(data));
+});
+
+twitchService.on("error", (type, message) => {
+  console.log(type, message);
+});
+
+twitchService.on("close", console.log);
 
 registerService(twitchService);

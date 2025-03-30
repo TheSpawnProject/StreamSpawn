@@ -22,7 +22,11 @@ public class BufferHost extends ScriptHost {
     protected byte[] buffer;
 
     public BufferHost() {
-        this.buffer = new byte[0];
+        this(new byte[0]);
+    }
+
+    public BufferHost(byte[] bytes) {
+        this.buffer = bytes;
     }
 
     @JSConstructor
