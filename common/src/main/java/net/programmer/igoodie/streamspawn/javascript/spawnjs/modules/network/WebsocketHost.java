@@ -47,8 +47,8 @@ public class WebsocketHost extends ScriptService {
     }
 
     @JSGetter
-    public Options getOptions() {
-        return this.options;
+    public Object getOptions() {
+        return Context.javaToJS(this.options, this.getParentScope());
     }
 
     @JSFunction

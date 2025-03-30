@@ -10,7 +10,6 @@ twitchService.options.tcpNoDelay = true;
 
 twitchService.addServiceListener("service-starting", () => {
   console.log("State =", twitchService.socket.getReadyState().name() + "");
-  // console.log("State =", twitchService.socket.getReadyState().ordinal());
   console.log("Service starting");
 });
 
@@ -21,7 +20,6 @@ twitchService.on("open", (handshake) => {
 
 twitchService.on("message", (data) => {
   console.log("State =", twitchService.socket.getReadyState().name());
-  // console.log("State =", twitchService.socket.getReadyState().ordinal());
   console.log(JSON.parse(data));
 });
 

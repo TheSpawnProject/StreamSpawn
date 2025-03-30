@@ -23,8 +23,9 @@ public class NetworkModule extends IntrinsicModule {
         ClassDefiner.defineClass(exports, TcpConnectionHost.class, true, true);
         ClassDefiner.defineClass(exports, SocketIOHost.class, true, true);
 
-        BaseFunction websocket = ClassDefiner.defineClass(exports, WebsocketHost.class, true, true);
+        BaseFunction websocket = ClassDefiner.defineClass(exports, WebsocketHost.class, false, true).getRight();
         ClassDefiner.defineEnum(websocket, ReadyState.class);
+        websocket.sealObject();
     }
 
 }

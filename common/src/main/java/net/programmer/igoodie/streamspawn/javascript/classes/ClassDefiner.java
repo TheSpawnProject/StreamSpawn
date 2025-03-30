@@ -1,6 +1,7 @@
 package net.programmer.igoodie.streamspawn.javascript.classes;
 
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
+import net.programmer.igoodie.tsl.util.Pair;
 import org.mozilla.javascript.*;
 import org.mozilla.javascript.annotations.*;
 
@@ -18,27 +19,28 @@ public class ClassDefiner {
 
     private static boolean sawSecurityException;
 
-    public static <T extends Scriptable> BaseFunction defineClass(Scriptable scope, Class<T> clazz, boolean sealed, boolean mapInheritance) {
+    public static <T extends Scriptable> Pair<String, BaseFunction> defineClass(Scriptable scope, Class<T> clazz, boolean sealed, boolean mapInheritance) {
         try {
             BaseFunction ctor = ClassDefiner.buildClassCtor(scope, clazz, sealed, mapInheritance);
             String name = getClassPrototype(ctor).getClassName();
             ScriptableObject.defineProperty(scope, name, ctor, ScriptableObject.DONTENUM);
-            return ctor;
+            return new Pair<>(name, ctor);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static <T extends Enum<T>> String defineEnum(Scriptable scope, Class<T> clazz) {
-        NativeObject object = new NativeObject();
+    public static <T extends Enum<T>> Pair<String, NativeObject> defineEnum(ScriptableObject scope, Class<T> clazz) {
+        NativeObject enumObject = new NativeObject();
         String name = clazz.getSimpleName();
 
         for (T enumConstant : clazz.getEnumConstants()) {
-            ScriptableObject.defineProperty(object, enumConstant.name(), enumConstant, ScriptableObject.CONST);
+            ScriptableObject.defineProperty(enumObject, enumConstant.name(), enumConstant, ScriptableObject.EMPTY);
         }
 
-        ScriptableObject.defineProperty(scope, name, object, ScriptableObject.CONST);
-        return name;
+        ScriptableObject.putConstProperty(scope, name, enumObject);
+
+        return new Pair<>(name, enumObject);
     }
 
     protected static <T extends Scriptable> BaseFunction buildClassCtor(Scriptable scope, Class<T> clazz, boolean sealed, boolean mapInheritance)
@@ -102,9 +104,8 @@ public class ClassDefiner {
             if (ScriptRuntime.ScriptableClass.isAssignableFrom(superClass)
                     && !Modifier.isAbstract(superClass.getModifiers())) {
                 Class<? extends Scriptable> superScriptable = extendsScriptable(superClass);
-                String name =
-                        ClassDefiner.defineClass(
-                                scope, superScriptable, sealed, mapInheritance);
+                Pair<String, BaseFunction> result = ClassDefiner.defineClass(scope, superScriptable, sealed, mapInheritance);
+                String name = result.getLeft();
                 if (name != null) {
                     superProto = ScriptableObject.getClassPrototype(scope, name);
                 }
