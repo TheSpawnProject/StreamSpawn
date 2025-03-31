@@ -9,6 +9,7 @@ import net.programmer.igoodie.streamspawn.javascript.service.ScriptService;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.SpawnJSExceptions;
 import org.mozilla.javascript.*;
 
+@Deprecated
 public class ServiceAPI implements ScopeInstallable {
 
     protected final Registry<String, Integration> integrations;

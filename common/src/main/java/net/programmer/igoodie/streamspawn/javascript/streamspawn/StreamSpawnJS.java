@@ -7,7 +7,7 @@ public class StreamSpawnJS implements ScopeInstallable {
 
     @Override
     public void install(ScriptableObject scope) {
-
+        // TODO: Services/Integrations API
     }
 
 }

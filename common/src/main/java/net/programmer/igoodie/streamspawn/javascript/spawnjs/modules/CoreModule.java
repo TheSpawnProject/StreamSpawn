@@ -5,6 +5,7 @@ import net.programmer.igoodie.streamspawn.javascript.commonjs.IntrinsicModule;
 import net.programmer.igoodie.streamspawn.javascript.service.ScriptService;
 import org.mozilla.javascript.ScriptableObject;
 
+@Deprecated
 public class CoreModule extends IntrinsicModule {
 
     @Override

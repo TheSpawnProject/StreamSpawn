@@ -2,6 +2,7 @@
 /// <reference path="./network/SocketIO.d.ts"/>
 /// <reference path="./network/Websocket.d.ts"/>
 
+// TODO: Yeet this, and narrow down to the d.ts files
 declare module "spawnjs:network" {
   export class Websocket extends Service {
     constructor(url: string);
@@ -18,15 +19,7 @@ declare module "spawnjs:network" {
     off(eventName: string): void;
   }
 
-  export class SocketIO extends Service {
-    constructor(url: string);
-
-    get socket(): SocketIO.Socket;
-    get options(): SocketIO.Options;
-
-    on(eventName: SocketIO.EventName, listener: (...args: any[]) => void): void;
-    off(eventName: string): void;
-  }
+  /* ---------------------- */
 
   export class TcpConnection extends Service {
     constructor(host: string, port: number);
@@ -47,6 +40,8 @@ declare module "spawnjs:network" {
     on(event: "connect", listener: () => void): void;
     on(event: "error", listener: (err: string) => void): void;
   }
+
+  /* ---------------------- */
 
   export namespace Buffer {
     type Encoding =
