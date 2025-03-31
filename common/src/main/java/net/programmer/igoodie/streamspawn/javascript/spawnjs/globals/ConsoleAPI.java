@@ -10,9 +10,10 @@ import java.util.stream.Collectors;
 public class ConsoleAPI implements ScopeInstallable {
 
     @Override
-    public void install(ScriptableObject scope) {
-        ScriptableObject consoleObj = JavascriptEngine.createObject(scope);
-        scope.defineProperty("console", consoleObj, ScriptableObject.CONST);
+    public void install(Scriptable scope) {
+        Context cx = JavascriptEngine.CONTEXT.get();
+        ScriptableObject consoleObj = (ScriptableObject) cx.newObject(scope);
+        ScriptableObject.defineProperty(scope, "console", consoleObj, ScriptableObject.CONST);
         consoleObj.defineProperty("log", new Log(), ScriptableObject.CONST);
     }
 

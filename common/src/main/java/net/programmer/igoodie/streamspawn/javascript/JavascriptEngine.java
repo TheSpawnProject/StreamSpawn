@@ -23,7 +23,7 @@ public class JavascriptEngine {
 
     public static final JavascriptWrapFactory WRAP_FACTORY = new JavascriptWrapFactory();
 
-    private static <V> V unsafe_useContext(Function<Context, V> consumer) {
+    public static <V> V unsafe_useContext(Function<Context, V> consumer) {
         Context cx = CONTEXT.get();
 
         if (!cx.isSealed()) {
@@ -38,19 +38,17 @@ public class JavascriptEngine {
         return result;
     }
 
-    public static ScriptableObject createObject() {
-        return createObject(null);
+    public static ScriptableObject createTopLevelScope() {
+        return CONTEXT.get().initSafeStandardObjects();
     }
 
-    public static ScriptableObject createObject(Scriptable parentScope) {
-        return unsafe_useContext(cx -> {
-            ScriptableObject scope = cx.initSafeStandardObjects();
-            if (parentScope != null) scope.setParentScope(parentScope);
-            return scope;
-        });
+    public static Scriptable forkScope(Scriptable scope) {
+        Scriptable forkedScope = CONTEXT.get().newObject(scope);
+        forkedScope.setParentScope(scope);
+        return forkedScope;
     }
 
-    public static Object eval(ScriptableObject scope, String source) {
+    public static Object eval(Scriptable scope, String source) {
         return CONTEXT.get().evaluateString(scope, source, "<root>", 1, null);
     }
 

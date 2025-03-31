@@ -1,4 +1,5 @@
 import { TcpSocket, Buffer } from "spawnjs:network";
+import { defineIntegration } from "streamspawn:integrations";
 
 const socket = new TcpSocket("127.0.0.1", 8080, Buffer.alloc(1024));
 
@@ -23,4 +24,7 @@ socket.on("error", (error) => {
   }
 });
 
-socket.connect();
+export default defineIntegration({
+  start: () => socket.connect(),
+  stop: () => socket.disconnect(),
+});

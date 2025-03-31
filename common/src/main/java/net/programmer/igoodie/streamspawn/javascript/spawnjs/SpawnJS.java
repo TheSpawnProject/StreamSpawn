@@ -8,13 +8,14 @@ import net.programmer.igoodie.streamspawn.javascript.spawnjs.globals.TimerAPI;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.globals.TslAPI;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.modules.CoreModule;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.modules.NetworkModule;
+import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
 public class SpawnJS implements ScopeInstallable, ModuleInstallable {
 
     @Override
-    public void install(ScriptableObject scope) {
-        scope.defineProperty("__version", "0.0.1", ScriptableObject.CONST);
+    public void install(Scriptable scope) {
+        ScriptableObject.defineProperty(scope, "__version", "0.0.1", ScriptableObject.CONST);
 
         new TslAPI().install(scope);
         new ConsoleAPI().install(scope);

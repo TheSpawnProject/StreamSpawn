@@ -9,7 +9,8 @@
     "lib": ["ES6"],
 
     "types": [
-      "../../../../java/net/programmer/igoodie/streamspawn/javascript/spawnjs/SpawnJS.d.ts"
+      "../../../../java/net/programmer/igoodie/streamspawn/javascript/spawnjs/SpawnJS.d.ts",
+      "../../../../java/net/programmer/igoodie/streamspawn/javascript/streamspawn/StreamSpawn.d.ts"
     ]
   },
 

@@ -8,7 +8,7 @@ import net.programmer.igoodie.streamspawn.javascript.spawnjs.modules.network.Soc
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.modules.network.TcpSocket;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.modules.network.WebsocketHost;
 import org.mozilla.javascript.BaseFunction;
-import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.Scriptable;
 
 public class NetworkModule extends IntrinsicModule {
 
@@ -18,7 +18,7 @@ public class NetworkModule extends IntrinsicModule {
     }
 
     @Override
-    public void buildExports(ScriptableObject exports) {
+    public void buildExports(Scriptable exports) {
         ClassDefiner.defineClass(exports, BufferHost.class, true, false);
         ClassDefiner.defineClass(exports, TcpSocket.class, true, true);
         ClassDefiner.defineClass(exports, SocketIOHost.class, true, true);

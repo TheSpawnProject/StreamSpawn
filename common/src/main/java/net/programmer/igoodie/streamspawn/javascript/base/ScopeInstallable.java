@@ -1,9 +1,9 @@
 package net.programmer.igoodie.streamspawn.javascript.base;
 
-import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.Scriptable;
 
 public interface ScopeInstallable {
 
-    void install(ScriptableObject scope);
+    void install(Scriptable scope);
 
 }

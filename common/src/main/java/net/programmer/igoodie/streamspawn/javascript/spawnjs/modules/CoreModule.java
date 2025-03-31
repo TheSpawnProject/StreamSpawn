@@ -1,11 +1,8 @@
 package net.programmer.igoodie.streamspawn.javascript.spawnjs.modules;
 
-import net.programmer.igoodie.streamspawn.javascript.classes.ClassDefiner;
 import net.programmer.igoodie.streamspawn.javascript.commonjs.IntrinsicModule;
-import net.programmer.igoodie.streamspawn.javascript.service.ScriptService;
-import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.Scriptable;
 
-@Deprecated
 public class CoreModule extends IntrinsicModule {
 
     @Override
@@ -14,8 +11,9 @@ public class CoreModule extends IntrinsicModule {
     }
 
     @Override
-    public void buildExports(ScriptableObject exports) {
-        ClassDefiner.defineClass(exports, ScriptService.class, true, false);
+    public void buildExports(Scriptable exports) {
+        // TODO: export version variable
+//        ClassDefiner.defineClass(exports, ScriptService.class, true, false);
     }
 
 }

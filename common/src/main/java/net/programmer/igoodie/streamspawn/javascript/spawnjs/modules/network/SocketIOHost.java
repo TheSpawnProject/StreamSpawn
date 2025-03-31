@@ -7,7 +7,7 @@ import net.programmer.igoodie.goodies.util.accessor.ArrayAccessor;
 import net.programmer.igoodie.goodies.util.accessor.ListAccessor;
 import net.programmer.igoodie.streamspawn.javascript.base.ScriptHost;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.SpawnJSExceptions;
-import net.programmer.igoodie.streamspawn.javascript.util.NativePromiseCallback;
+import net.programmer.igoodie.streamspawn.javascript.util.NativePromiseCallbackFn;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
@@ -102,7 +102,7 @@ public class SocketIOHost extends ScriptHost {
 
         if (arg0 instanceof String eventName) {
             return cx.newObject(thisObj.getParentScope(), "Promise", new Object[]{
-                    new NativePromiseCallback<>((resolve, reject) -> {
+                    new NativePromiseCallbackFn<>((resolve, reject) -> {
                         hostObj.socket.emit(eventName, eventArgs.toArray(), resolve::resolve);
                     })
             });

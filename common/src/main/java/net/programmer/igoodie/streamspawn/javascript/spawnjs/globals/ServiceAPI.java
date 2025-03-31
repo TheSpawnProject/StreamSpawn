@@ -19,8 +19,8 @@ public class ServiceAPI implements ScopeInstallable {
     }
 
     @Override
-    public void install(ScriptableObject scope) {
-        scope.defineProperty("registerService", new RegisterServiceFn(), ScriptableObject.CONST);
+    public void install(Scriptable scope) {
+        ScriptableObject.defineProperty(scope, "registerService", new RegisterServiceFn(), ScriptableObject.CONST);
     }
 
     public class RegisterServiceFn extends BaseFunction {

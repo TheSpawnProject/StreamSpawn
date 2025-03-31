@@ -7,11 +7,11 @@ import org.mozilla.javascript.Scriptable;
 
 import java.util.function.BiConsumer;
 
-public class NativePromiseCallback<R, E> extends BaseFunction {
+public class NativePromiseCallbackFn<R, E> extends BaseFunction {
 
     protected final BiConsumer<Resolve<R>, Reject<E>> handler;
 
-    public NativePromiseCallback(BiConsumer<Resolve<R>, Reject<E>> handler) {
+    public NativePromiseCallbackFn(BiConsumer<Resolve<R>, Reject<E>> handler) {
         this.handler = handler;
     }
 

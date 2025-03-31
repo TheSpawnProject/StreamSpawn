@@ -2,6 +2,7 @@ package net.programmer.igoodie.streamspawn.integration.base;
 
 import net.programmer.igoodie.goodies.registry.Registrable;
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
+import net.programmer.igoodie.streamspawn.javascript.base.ScopeInstallable;
 import net.programmer.igoodie.streamspawn.javascript.service.ScriptService;
 import org.mozilla.javascript.*;
 
@@ -13,11 +14,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Integration implements Registrable<String> {
+public class Integration implements Registrable<String>, ScopeInstallable {
 
     protected final IntegrationManifest manifest;
+
     protected Script script;
 
+    protected Runnable startCb;
+    protected Runnable stopCb;
+
+    @Deprecated
     public final List<ScriptService> services = new ArrayList<>();
 
     public Integration(IntegrationManifest manifest) {
@@ -35,15 +41,6 @@ public class Integration implements Registrable<String> {
 
     public Script getScript() {
         return this.script;
-    }
-
-    public ScriptableObject createScope(Scriptable parentScope) {
-        ScriptableObject integrationScope = JavascriptEngine.createObject(parentScope);
-        integrationScope.defineProperty("integration", Context.javaToJS(this.manifest, integrationScope), ScriptableObject.CONST);
-        integrationScope.defineProperty("exports", new NativeObject(), ScriptableObject.PERMANENT);
-        integrationScope.defineProperty("module", new NativeObject(), ScriptableObject.PERMANENT);
-        JavascriptEngine.eval(integrationScope, "const integrationConfig = { token: 'TODO:DUMMY_TOKEN' };");
-        return integrationScope;
     }
 
     public void downloadScript(String url) throws IOException {
@@ -68,6 +65,52 @@ public class Integration implements Registrable<String> {
         Context cx = JavascriptEngine.CONTEXT.get();
         source = source.replaceFirst("^[\"']use strict[\"'];?", "//'use strict';");
         this.script = cx.compileString(source, "<anonymous>", 1, null);
+    }
+
+    @Override
+    public void install(Scriptable scope) {
+        ScriptableObject.defineProperty(scope, "integration", this.manifest, ScriptableObject.CONST);
+        ScriptableObject.defineProperty(scope, "exports", new NativeObject(), ScriptableObject.PERMANENT);
+        ScriptableObject.defineProperty(scope, "module", new NativeObject(), ScriptableObject.PERMANENT);
+        JavascriptEngine.eval(scope, "const integrationConfig = { token: 'TODO:DUMMY_TOKEN' };");
+    }
+
+    public void load(Scriptable scope) {
+        if (this.script == null) {
+            throw new IllegalStateException("Script is not loaded yet.");
+        }
+
+        Context cx = JavascriptEngine.CONTEXT.get();
+
+        this.script.exec(cx, scope);
+
+        if (ScriptableObject.getProperty(scope, "exports") instanceof ScriptableObject exports) {
+            if (exports.get("default") instanceof NativeObject defaultExports) {
+                Function start = (Function) defaultExports.get("start");
+                Function stop = (Function) defaultExports.get("stop");
+                this.startCb = () -> start.call(cx, scope, exports, new Object[0]);
+                this.stopCb = () -> stop.call(cx, scope, exports, new Object[0]);
+                return;
+            }
+        }
+
+        throw new IllegalStateException("Script did not define an integration.");
+    }
+
+    public void start() {
+        if (this.startCb == null) {
+            throw new IllegalStateException("Script is not executed yet.");
+        }
+
+        this.startCb.run();
+    }
+
+    public void stop() {
+        if (this.stopCb == null) {
+            throw new IllegalStateException("Script is not executed yet.");
+        }
+
+        this.stopCb.run();
     }
 
 }

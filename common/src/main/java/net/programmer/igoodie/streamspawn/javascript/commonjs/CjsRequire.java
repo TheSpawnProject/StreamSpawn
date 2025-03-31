@@ -27,10 +27,7 @@ public class CjsRequire extends Require {
         IntrinsicModule intrinsicModule = cjs.intrinsicModules.get(moduleId);
 
         if (intrinsicModule != null) {
-            if (!intrinsicModule.isLoaded()) {
-                intrinsicModule.load();
-            }
-            return intrinsicModule.moduleScope;
+            return intrinsicModule.require(scope);
         }
 
         return super.call(cx, scope, thisObj, args);

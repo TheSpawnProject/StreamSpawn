@@ -8,11 +8,12 @@ import java.util.*;
 
 public class TimerAPI implements ScopeInstallable {
 
-    public void install(ScriptableObject scope) {
-        scope.defineProperty("setTimeout", new SetTimeout(), ScriptableObject.CONST);
-        scope.defineProperty("setInterval", new SetInterval(), ScriptableObject.CONST);
-        scope.defineProperty("clearTimeout", new ClearTask(), ScriptableObject.CONST);
-        scope.defineProperty("clearInterval", new ClearTask(), ScriptableObject.CONST);
+    @Override
+    public void install(Scriptable scope) {
+        ScriptableObject.defineProperty(scope, "setTimeout", new SetTimeout(), ScriptableObject.CONST);
+        ScriptableObject.defineProperty(scope, "setInterval", new SetInterval(), ScriptableObject.CONST);
+        ScriptableObject.defineProperty(scope, "clearTimeout", new ClearTask(), ScriptableObject.CONST);
+        ScriptableObject.defineProperty(scope, "clearInterval", new ClearTask(), ScriptableObject.CONST);
     }
 
     protected final Timer timer = new Timer("JS-TimerAPI-" + UUID.randomUUID());

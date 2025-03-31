@@ -200,6 +200,9 @@ public class BufferHost extends ScriptHost {
         return this;
     }
 
+    // TODO: read
+    // TODO: write
+
     public static class Codec {
 
         public static byte[] encode(String input, String encoding) {

@@ -10,8 +10,8 @@ import org.mozilla.javascript.*;
 public class TslAPI implements ScopeInstallable {
 
     @Override
-    public void install(ScriptableObject scope) {
-        scope.defineProperty("emit", new EmitFn(), ScriptableObject.CONST);
+    public void install(Scriptable scope) {
+        ScriptableObject.defineProperty(scope, "emit", new EmitFn(), ScriptableObject.CONST);
     }
 
     public static class EmitFn extends BaseFunction {
