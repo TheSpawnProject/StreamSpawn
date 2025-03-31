@@ -43,7 +43,7 @@ public class ModIntegrations {
                             "1.0.0"));
 
             File integrationFile = new File(ModIntegrations.class.getClassLoader()
-                    .getResource("assets/streamspawn/integrations/twitch_api/integration.js")
+                    .getResource("assets/streamspawn/integrations/tcp_socket/integration.js")
                     .toURI()).getCanonicalFile();
             integration.loadScript(integrationFile);
 

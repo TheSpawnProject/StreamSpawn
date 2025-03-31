@@ -111,7 +111,7 @@ public class WebsocketHost extends ScriptHost {
 
     @JSFunction
     public void sendPing() {
-        this.socket.sendPing();
+    this.socket.sendPing();
     }
 
     @JSFunction

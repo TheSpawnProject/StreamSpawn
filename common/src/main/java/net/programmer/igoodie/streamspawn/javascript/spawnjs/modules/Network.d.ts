@@ -1,31 +1,9 @@
-/// <reference path="./network/TcpConnection.d.ts"/>
+/// <reference path="./network/TcpSocket.d.ts"/>
 /// <reference path="./network/SocketIO.d.ts"/>
 /// <reference path="./network/Websocket.d.ts"/>
 
 // TODO: Yeet this, and narrow down to the d.ts files
 declare module "spawnjs:network" {
-  export class TcpConnection extends Service {
-    constructor(host: string, port: number);
-
-    get underlyingSocket(): NativeTcp.Socket;
-    get buffer(): Buffer;
-    set buffer(buffer: Buffer);
-
-    on(
-      event: "lookup",
-      listener: (
-        error: undefined | string,
-        addressType: 4 | 6,
-        resolvedAddress: string,
-        hostname: string
-      ) => void
-    ): void;
-    on(event: "connect", listener: () => void): void;
-    on(event: "error", listener: (err: string) => void): void;
-  }
-
-  /* ---------------------- */
-
   export namespace Buffer {
     type Encoding =
       | "ascii"
