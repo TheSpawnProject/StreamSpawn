@@ -1,33 +1,33 @@
 declare module "spawnjs:network" {
   export namespace SocketIO {
     interface TransportOptions {
-      hostname: string;
-      path: string;
-      timestampParam: string;
-      secure: boolean;
-      timestampRequests: boolean;
-      port: number;
-      policyPort: number;
+      hostname?: string;
+      path?: string;
+      timestampParam?: string;
+      secure?: boolean;
+      timestampRequests?: boolean;
+      port?: number;
+      policyPort?: number;
       // webSocketFactory
       // callFactory
     }
 
     interface Options extends TransportOptions {
-      forceNew: boolean;
-      reconnection: boolean;
-      reconnectionAttempts: number;
-      reconnectionDelay: number;
-      reconnectionDelayMax: number;
-      randomizationFactor: number;
+      forceNew?: boolean;
+      reconnection?: boolean;
+      reconnectionAttempts?: number;
+      reconnectionDelay?: number;
+      reconnectionDelayMax?: number;
+      randomizationFactor?: number;
       // encoder
       // decoder
-      timeout: number;
-      transports: string[];
-      upgrade: boolean;
-      rememberUpgrade: boolean;
-      host: string;
-      query: string;
-      transportOptions: Record<string, TransportOptions>;
+      timeout?: number;
+      transports?: string[];
+      upgrade?: boolean;
+      rememberUpgrade?: boolean;
+      host?: string;
+      query?: string;
+      transportOptions?: Record<string, TransportOptions>;
     }
 
     type DefaultEventName =

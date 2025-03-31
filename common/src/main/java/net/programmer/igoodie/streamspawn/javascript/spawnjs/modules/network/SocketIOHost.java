@@ -86,6 +86,7 @@ public class SocketIOHost extends ScriptHost {
 
         if (arg0 instanceof String eventName) {
             hostObj.socket.emit(eventName, eventArgs);
+            return;
         }
 
         throw SpawnJSExceptions.invalidArguments(thisObj, args, function);
@@ -122,6 +123,8 @@ public class SocketIOHost extends ScriptHost {
             if (arg1 instanceof Function listener) {
                 hostObj.socket.on(eventName, eventArgs ->
                         listener.call(cx, function.getParentScope(), thisObj, eventArgs));
+
+                return;
             }
         }
 
@@ -140,6 +143,7 @@ public class SocketIOHost extends ScriptHost {
             if (arg1 instanceof Function listener) {
                 hostObj.socket.once(eventName, eventArgs ->
                         listener.call(cx, function.getParentScope(), thisObj, eventArgs));
+                return;
             }
         }
 

@@ -1,12 +1,14 @@
 package net.programmer.igoodie.streamspawn.javascript.spawnjs.modules.network;
 
 import com.neovisionaries.ws.client.*;
-import net.programmer.igoodie.streamspawn.javascript.coercer.CoercibleFunction;
+import net.programmer.igoodie.goodies.util.accessor.ArrayAccessor;
+import net.programmer.igoodie.streamspawn.javascript.base.ScriptHost;
 import net.programmer.igoodie.streamspawn.javascript.coercer.JavaUtilCoercer;
-import net.programmer.igoodie.streamspawn.javascript.service.ScriptService;
+import net.programmer.igoodie.streamspawn.javascript.spawnjs.SpawnJSExceptions;
 import net.programmer.igoodie.streamspawn.javascript.util.Listeners;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
+import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.annotations.JSConstructor;
 import org.mozilla.javascript.annotations.JSFunction;
 import org.mozilla.javascript.annotations.JSGetter;
@@ -17,49 +19,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class WebsocketHost extends ScriptService {
+public class WebsocketHost extends ScriptHost {
 
     protected URI url;
     protected WebSocket socket;
     protected Options options;
+    protected Hook hook;
 
-    // TODO: Integrate, once Wutax releases Interlude
-    protected Listeners<Event, Listeners.GenericListener> listeners = new Listeners<>();
+    public WebsocketHost() {}
 
-    @Override
-    public String getClassName() {
-        return "Websocket";
-    }
-
-    public WebsocketHost() {
-        this.options = new Options();
-    }
-
-    @JSConstructor
-    public WebsocketHost(String url) {
-        this();
+    public WebsocketHost(String url, Options options) {
         this.url = URI.create(url);
-    }
+        this.options = options;
 
-    @JSGetter
-    public Object getSocket() {
-        return Context.javaToJS(this.socket, this.getParentScope());
-    }
-
-    @JSGetter
-    public Object getOptions() {
-        return Context.javaToJS(this.options, this.getParentScope());
-    }
-
-    @JSFunction
-    public void on(String eventName, Function callback) {
-        Event event = Event.valueOf(eventName.toUpperCase());
-        CoercibleFunction listener = CoercibleFunction.makeCoercible(this.getParentScope(), callback);
-        this.listeners.subscribe(event, listener::call);
-    }
-
-    @Override
-    public void beginImpl() {
         WebSocketFactory factory = new WebSocketFactory();
 
         factory.setConnectionTimeout(this.options.connectionTimeout);
@@ -70,57 +42,150 @@ public class WebsocketHost extends ScriptService {
 
             this.options.handshakeHeaders.forEach(this.socket::addHeader);
 
-            this.socket.addListener(new Listener());
-
-            this.socket.connectAsynchronously();
+            this.hook = new Hook();
+            this.socket.addListener(this.hook);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    @Override
-    public void terminateImpl() {
-        if (this.socket.getState() == WebSocketState.OPEN) {
-            this.socket.disconnect();
+    @JSConstructor
+    public static WebsocketHost constructor(Context cx, Object[] args, Function ctor, boolean inNewExpr) {
+        ArrayAccessor<Object> argsAccessor = ArrayAccessor.of(args);
+        Object arg0 = argsAccessor.get(0).orElseThrow();
+        Object arg1 = argsAccessor.get(1)
+                .map(v -> Context.jsToJava(v, Options.class))
+                .orElseGet(Options::new);
+
+        Scriptable scope = ctor.getParentScope();
+
+        if (arg0 instanceof String url) {
+            if (arg1 instanceof Options options) {
+                return bindToScope(new WebsocketHost(url, options), scope);
+            }
         }
+
+        throw SpawnJSExceptions.invalidArguments(ctor, args, ctor);
     }
 
-    public class Listener extends WebSocketAdapter {
+    @Override
+    public String getClassName() {
+        return "Websocket";
+    }
+
+    @JSGetter
+    public WebSocketState getState() {
+        return socket.getState();
+    }
+
+    @JSFunction
+    public void connect() {
+        this.socket.connectAsynchronously();
+    }
+
+    @JSFunction
+    public void disconnect() {
+        this.socket.disconnect();
+    }
+
+    @JSFunction
+    public static void send(Context cx, Scriptable thisObj, Object[] args, Function function) {
+        ArrayAccessor<Object> argsAccessor = ArrayAccessor.of(args);
+        Object arg0 = argsAccessor.get(0).orElse(null);
+
+        WebsocketHost hostObj = (WebsocketHost) thisObj;
+
+        if (arg0 instanceof BufferHost buffer) {
+            hostObj.socket.sendBinary(buffer.buffer);
+            return;
+        }
+
+        if (arg0 instanceof String text) {
+            hostObj.socket.sendText(text);
+            return;
+        }
+
+        throw SpawnJSExceptions.invalidArguments(thisObj, args, function);
+    }
+
+    @JSFunction
+    public void sendPing() {
+        this.socket.sendPing();
+    }
+
+    @JSFunction
+    public static void on(Context cx, Scriptable thisObj, Object[] args, Function function) {
+        ArrayAccessor<Object> argsAccessor = ArrayAccessor.of(args);
+        Object arg0 = argsAccessor.get(0).orElse(null);
+        Object arg1 = argsAccessor.get(1).orElse(null);
+
+        WebsocketHost hostObj = (WebsocketHost) thisObj;
+
+        if (arg0 instanceof String eventName) {
+            if (arg1 instanceof Function listener) {
+                Hook.Event event = Hook.Event.valueOf(eventName.toUpperCase());
+
+                hostObj.hook.listeners.subscribe(event, eventArgs ->
+                        listener.call(cx, function.getParentScope(), thisObj, eventArgs));
+
+                return;
+            }
+        }
+
+        throw SpawnJSExceptions.invalidArguments(thisObj, args, function);
+    }
+
+    public class Hook extends WebSocketAdapter {
+
+        public enum Event {
+            CONNECTED,
+            MESSAGE,
+            MESSAGE_BUFFER,
+            PONG,
+            DISCONNECTED,
+            ERROR
+        }
+
+        // TODO: Integrate, once Wutax releases Interlude
+        protected Listeners<Event, Listeners.GenericListener> listeners = new Listeners<>();
 
         @Override
         public void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
-            WebsocketHost.this.listeners.invoke(Event.CONNECTED, l -> l.call(
+            this.listeners.invoke(Event.CONNECTED, l -> l.call(
                     JavaUtilCoercer.Map.INSTANCE.coerceValue(headers, WebsocketHost.this.getParentScope())
             ));
         }
 
         @Override
         public void onTextMessage(WebSocket websocket, String text) {
-            WebsocketHost.this.listeners.invoke(Event.MESSAGE, l -> l.call(
-                    text
-            ));
+            this.listeners.invoke(Event.MESSAGE, l -> l.call(text));
         }
 
         @Override
         public void onTextMessage(WebSocket websocket, byte[] data) {
-            WebsocketHost.this.listeners.invoke(Event.MESSAGE_BUFFER, l -> l.call(
-                    new BufferHost(data)
-            ));
+            BufferHost buffer = new BufferHost(data);
+            this.listeners.invoke(Event.MESSAGE_BUFFER, l -> l.call(buffer));
+        }
+
+        @Override
+        public void onPongFrame(WebSocket websocket, WebSocketFrame frame) {
+            BufferHost payloadBuffer = new BufferHost(frame.getPayload());
+            this.listeners.invoke(Event.PONG, l -> l.call(payloadBuffer));
         }
 
         @Override
         public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) {
             int closeCode = serverCloseFrame.getCloseCode();
             String closeReason = serverCloseFrame.getCloseReason();
-            WebsocketHost.this.listeners.invoke(Event.DISCONNECTED, l -> l.call(
+            this.listeners.invoke(Event.DISCONNECTED, l -> l.call(
                     closeCode, closeReason, closedByServer
             ));
         }
 
         @Override
         public void onError(WebSocket websocket, WebSocketException cause) {
-            WebsocketHost.this.listeners.invoke(Event.ERROR, l -> l.call(
+            this.listeners.invoke(Event.ERROR, l -> l.call(
                     cause.getClass().getSimpleName(), cause.getMessage()
             ));
         }
@@ -133,14 +198,6 @@ public class WebsocketHost extends ScriptService {
         public int socketTimeout = 0;
         public Map<String, String> handshakeHeaders = new HashMap<>();
 
-    }
-
-    public enum Event {
-        CONNECTED,
-        MESSAGE,
-        MESSAGE_BUFFER,
-        DISCONNECTED,
-        ERROR
     }
 
 }

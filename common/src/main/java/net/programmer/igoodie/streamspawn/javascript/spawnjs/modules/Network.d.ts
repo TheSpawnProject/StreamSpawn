@@ -4,23 +4,6 @@
 
 // TODO: Yeet this, and narrow down to the d.ts files
 declare module "spawnjs:network" {
-  export class Websocket extends Service {
-    constructor(url: string);
-
-    static State: Websocket.State;
-
-    get socket(): Websocket.Socket;
-    get options(): Websocket.Options;
-
-    on<T extends keyof Websocket.EventMap>(
-      eventName: T,
-      listener: Websocket.EventMap[T]
-    ): void;
-    off(eventName: string): void;
-  }
-
-  /* ---------------------- */
-
   export class TcpConnection extends Service {
     constructor(host: string, port: number);
 
