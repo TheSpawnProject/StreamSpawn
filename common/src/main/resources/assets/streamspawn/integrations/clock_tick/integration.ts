@@ -6,20 +6,16 @@
  * once the service is detached
  */
 
-import { AbstractService } from "spawnjs:core";
-
-const service = new AbstractService();
+import { defineIntegration } from "streamspawn:integrations";
 
 let intervalId: number;
 
-service.addServiceListener("service-starting", () => {
-  intervalId = setInterval(() => {
-    emit("Clock Tick", {});
-  }, 1000);
-});
+export default defineIntegration({
+  start() {
+    intervalId = setInterval(() => {
+      emit("Clock Tick", {});
+    }, 1000);
+  },
 
-service.addServiceListener("service-terminating", () => {
-  clearInterval(intervalId);
+  stop: () => clearInterval(intervalId),
 });
-
-registerService(service);

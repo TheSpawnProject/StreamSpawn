@@ -1,4 +1,5 @@
 import { SocketIO } from "spawnjs:network";
+import { defineIntegration } from "streamspawn:integrations";
 
 const sio = new SocketIO<{
   foo: (a: 1, b: 2, c: 3) => void;
@@ -6,12 +7,9 @@ const sio = new SocketIO<{
   baz: (a: "A", b: "B", ack: () => 999) => void;
 }>("https://sockets.streamlabs.com");
 
-sio.connect();
-
-sio.emit("foo", 1, 2, 3);
-
 sio.io().on("connect", () => {
   console.log("Connect!");
+  sio.emit("foo", 1, 2, 3);
 });
 
 sio.io().on("error", () => {
@@ -30,3 +28,8 @@ sio2.emit("", 1, 2, 3, 4, 5, 6, 7);
 sio2
   .emitWithAck("foo", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
   .then((val) => console.log(val));
+
+export default defineIntegration({
+  start: () => sio.connect(),
+  stop: () => sio.disconnect(),
+});

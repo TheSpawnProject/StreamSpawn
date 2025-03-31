@@ -2,19 +2,15 @@ package net.programmer.igoodie.streamspawn.integration.base;
 
 import net.programmer.igoodie.goodies.registry.Registrable;
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
-import net.programmer.igoodie.streamspawn.javascript.base.ScopeInstallable;
-import net.programmer.igoodie.streamspawn.javascript.service.ScriptService;
 import org.mozilla.javascript.*;
 
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
-public class Integration implements Registrable<String>, ScopeInstallable {
+public class Integration implements Registrable<String> {
 
     protected final IntegrationManifest manifest;
 
@@ -22,9 +18,6 @@ public class Integration implements Registrable<String>, ScopeInstallable {
 
     protected Runnable startCb;
     protected Runnable stopCb;
-
-    @Deprecated
-    public final List<ScriptService> services = new ArrayList<>();
 
     public Integration(IntegrationManifest manifest) {
         this.manifest = manifest;
@@ -67,29 +60,31 @@ public class Integration implements Registrable<String>, ScopeInstallable {
         this.script = cx.compileString(source, "<anonymous>", 1, null);
     }
 
-    @Override
-    public void install(Scriptable scope) {
+    protected void installScriptGlobals(Scriptable scope) {
         ScriptableObject.defineProperty(scope, "integration", this.manifest, ScriptableObject.CONST);
         ScriptableObject.defineProperty(scope, "exports", new NativeObject(), ScriptableObject.PERMANENT);
         ScriptableObject.defineProperty(scope, "module", new NativeObject(), ScriptableObject.PERMANENT);
         JavascriptEngine.eval(scope, "const integrationConfig = { token: 'TODO:DUMMY_TOKEN' };");
     }
 
-    public void load(Scriptable scope) {
+    public void evaluateScript(Scriptable scope) {
         if (this.script == null) {
             throw new IllegalStateException("Script is not loaded yet.");
         }
 
+        Scriptable integrationScope = JavascriptEngine.forkScope(scope);
+        installScriptGlobals(integrationScope);
+
         Context cx = JavascriptEngine.CONTEXT.get();
 
-        this.script.exec(cx, scope);
+        this.script.exec(cx, integrationScope);
 
-        if (ScriptableObject.getProperty(scope, "exports") instanceof ScriptableObject exports) {
+        if (ScriptableObject.getProperty(integrationScope, "exports") instanceof ScriptableObject exports) {
             if (exports.get("default") instanceof NativeObject defaultExports) {
                 Function start = (Function) defaultExports.get("start");
                 Function stop = (Function) defaultExports.get("stop");
-                this.startCb = () -> start.call(cx, scope, exports, new Object[0]);
-                this.stopCb = () -> stop.call(cx, scope, exports, new Object[0]);
+                this.startCb = () -> start.call(cx, integrationScope, exports, new Object[0]);
+                this.stopCb = () -> stop.call(cx, integrationScope, exports, new Object[0]);
                 return;
             }
         }

@@ -3,7 +3,6 @@ package net.programmer.igoodie.streamspawn.init;
 import net.programmer.igoodie.goodies.registry.Registry;
 import net.programmer.igoodie.streamspawn.integration.base.Integration;
 import net.programmer.igoodie.streamspawn.integration.base.IntegrationManifest;
-import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
 import net.programmer.igoodie.streamspawn.javascript.commonjs.CommonJS;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.SpawnJS;
 import net.programmer.igoodie.streamspawn.javascript.streamspawn.StreamSpawnJS;
@@ -34,25 +33,30 @@ public class ModIntegrations {
                             "Streamlabs Integration",
                             "1.0.0"));
 
-            INTEGRATION_REGISTRY.register(integration);
-
             File scriptFile = new File(ModIntegrations.class.getClassLoader()
-                    .getResource("assets/streamspawn/integrations/tcp_socket/integration.js")
+                    .getResource("assets/streamspawn/integrations/twitch_api/integration.js")
                     .toURI()).getCanonicalFile();
             integration.loadScript(scriptFile);
+            integration.evaluateScript(topLevelScope);
 
-            Scriptable integrationScope = JavascriptEngine.forkScope(topLevelScope);
-            integration.install(integrationScope);
-            integration.load(integrationScope);
-            integration.start();
+            INTEGRATION_REGISTRY.register(integration);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    public static void start() {
+        INTEGRATION_REGISTRY.forEach(Integration::start);
+    }
+
+    public static void stop() {
+        INTEGRATION_REGISTRY.forEach(Integration::stop);
+    }
+
     public static void main(String[] args) {
         initialize();
+        start();
         Context.exit();
     }
 
