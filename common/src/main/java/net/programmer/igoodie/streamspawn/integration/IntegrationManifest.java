@@ -1,4 +1,4 @@
-package net.programmer.igoodie.streamspawn.integration.base;
+package net.programmer.igoodie.streamspawn.integration;
 
 import java.io.File;
 

@@ -1,6 +1,22 @@
 {
   "$schema": "todo",
+  
   "id": "clock_tick",
   "name": "Clock Tick",
-  "version": "1.0.0"
+  "version": "1.0.0",
+
+  "events": {
+    "Clock Begin": {
+      "time": { "number": true }
+    },
+
+    "Clock Tick": {
+      "dt": { "number": true },
+      "actor": { "string": true }
+    },
+
+    "Clock End": {
+      "time": { "number": true }
+    }
+  }
 }

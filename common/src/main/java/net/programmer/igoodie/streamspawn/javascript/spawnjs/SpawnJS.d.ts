@@ -1,7 +1,5 @@
 /// <reference path="./SpawnJava.d.ts"/>
 
-/// <reference path="./globals/TslAPI.d.ts"/>
-/// <reference path="./globals/ServiceAPI.d.ts"/>
 /// <reference path="./globals/ConsoleAPI.d.ts"/>
 /// <reference path="./globals/TimerAPI.d.ts"/>
 
@@ -21,6 +19,10 @@ declare const integrationConfig: any;
 declare function stopIntegration(reason: string): void;
 
 declare namespace TypeUtils {
+  export type Prettify<T> = {
+    [K in keyof T]: T[K];
+  } & {};
+
   // prettier-ignore
   export type Equals<X, Y> = 
     (<T>() => T extends X ? 1 : 2) extends 

@@ -1,11 +1,12 @@
 package net.programmer.igoodie.streamspawn.javascript.streamspawn;
 
 import net.programmer.igoodie.goodies.registry.Registry;
-import net.programmer.igoodie.streamspawn.integration.base.Integration;
+import net.programmer.igoodie.streamspawn.integration.Integration;
 import net.programmer.igoodie.streamspawn.javascript.base.ScopeInstallable;
 import net.programmer.igoodie.streamspawn.javascript.commonjs.CommonJS;
 import net.programmer.igoodie.streamspawn.javascript.commonjs.ModuleInstallable;
 import net.programmer.igoodie.streamspawn.javascript.streamspawn.modules.IntegrationsModule;
+import net.programmer.igoodie.streamspawn.javascript.streamspawn.modules.TslModule;
 import org.mozilla.javascript.Scriptable;
 
 public class StreamSpawnJS implements ScopeInstallable, ModuleInstallable {
@@ -24,6 +25,7 @@ public class StreamSpawnJS implements ScopeInstallable, ModuleInstallable {
     @Override
     public void installModules(CommonJS commonjs) {
         commonjs.registerIntrinsicModule(new IntegrationsModule());
+        commonjs.registerIntrinsicModule(new TslModule());
     }
 
 }

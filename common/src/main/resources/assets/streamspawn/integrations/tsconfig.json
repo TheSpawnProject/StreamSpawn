@@ -5,6 +5,8 @@
 
     "alwaysStrict": false,
 
+    "resolveJsonModule": true,
+
     // Disable std platform libs, as we're using SpawnJS
     "lib": ["ES6"],
 

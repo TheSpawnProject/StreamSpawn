@@ -1,4 +1,4 @@
-package net.programmer.igoodie.streamspawn.integration.base;
+package net.programmer.igoodie.streamspawn.integration;
 
 import net.programmer.igoodie.goodies.registry.Registrable;
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
@@ -11,6 +11,13 @@ import java.nio.file.Files;
 import java.util.stream.Collectors;
 
 public class Integration implements Registrable<String> {
+
+    // TODO: States: NOT_LOADED, READY, STARTED, STOPPED, ERROR (?)
+    // NOT_LOADED = Just looked up the manifest from fs
+    // READY = Fetched the script, executed the script, loaded the manifest metadata
+    // STARTED = Start invoked, working
+    // STOPPED = Stopped via command
+    // ERROR = Stopped by an error
 
     protected final IntegrationManifest manifest;
 

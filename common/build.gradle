@@ -15,7 +15,7 @@ dependencies {
     // Architectury API. This is optional, and you can comment it out if you don't need it.
     modImplementation "dev.architectury:architectury:$rootProject.architectury_api_version"
 
-    implementation 'com.github.TheSpawnProject:TheSpawnLanguage:v1.5.1-alpha3'
+    implementation 'com.github.TheSpawnProject:TheSpawnLanguage:v1.5.1-alpha4'
     implementation 'org.mozilla:rhino:1.8.0'
     implementation "io.socket:socket.io-client:1.0.0"
 

@@ -1,17 +1,18 @@
-package net.programmer.igoodie.streamspawn.javascript.spawnjs.globals;
+package net.programmer.igoodie.streamspawn.javascript.streamspawn.modules.tsl;
 
 import net.programmer.igoodie.goodies.runtime.GoodieObject;
 import net.programmer.igoodie.goodies.util.accessor.ArrayAccessor;
-import net.programmer.igoodie.streamspawn.javascript.base.ScopeInstallable;
+import net.programmer.igoodie.streamspawn.init.ModRulesets;
 import net.programmer.igoodie.streamspawn.javascript.format.NativeGoodieFormat;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.SpawnJSExceptions;
+import net.programmer.igoodie.tsl.runtime.event.TSLEventContext;
 import org.mozilla.javascript.*;
 
-public class TslAPI implements ScopeInstallable {
+public class CreateEmitterFn extends BaseFunction {
 
     @Override
-    public void install(Scriptable scope) {
-        ScriptableObject.defineProperty(scope, "emit", new EmitFn(), ScriptableObject.CONST);
+    public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
+        return new CreateEmitterFn.EmitFn();
     }
 
     public static class EmitFn extends BaseFunction {
@@ -26,8 +27,11 @@ public class TslAPI implements ScopeInstallable {
                 if (arg1 instanceof NativeObject nativeEventArgs) {
                     GoodieObject eventArgs = NativeGoodieFormat.INSTANCE.writeToGoodie(nativeEventArgs);
 
-                    // TODO: Queue an actual TSL event instead of logging
-                    System.out.println("TODO: Emit; " + eventName + " -> " + eventArgs);
+                    TSLEventContext ctx = new TSLEventContext(ModRulesets.TSL, eventName);
+                    ctx.setTarget("Minecraft:DummyPlayer");
+                    ctx.getEventArgs().putAll(eventArgs);
+                    ModRulesets.triggerEvent(ctx);
+
                     return Undefined.instance;
                 }
             }
