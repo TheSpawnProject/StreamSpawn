@@ -6,16 +6,18 @@ public class IntegrationManifest {
 
     public final String id;
     public final String name;
+    public final String author;
     public final String version;
 
-    protected IntegrationManifest(String id, String name, String version) {
+    protected IntegrationManifest(String id, String name, String author, String version) {
         this.id = id;
         this.name = name;
+        this.author = author;
         this.version = version;
     }
 
-    public static IntegrationManifest of(String id, String name, String version) {
-        return new IntegrationManifest(id, name, version);
+    public static IntegrationManifest of(String id, String name, String author, String version) {
+        return new IntegrationManifest(id, name, author, version);
     }
 
     public static IntegrationManifest fromFile(File file) {

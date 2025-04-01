@@ -2,7 +2,7 @@ package net.programmer.igoodie.streamspawn.javascript.streamspawn.modules.tsl;
 
 import net.programmer.igoodie.goodies.runtime.GoodieObject;
 import net.programmer.igoodie.goodies.util.accessor.ArrayAccessor;
-import net.programmer.igoodie.streamspawn.init.ModRulesets;
+import net.programmer.igoodie.streamspawn.init.ModTSL;
 import net.programmer.igoodie.streamspawn.javascript.format.NativeGoodieFormat;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.SpawnJSExceptions;
 import net.programmer.igoodie.tsl.runtime.event.TSLEventContext;
@@ -27,10 +27,10 @@ public class CreateEmitterFn extends BaseFunction {
                 if (arg1 instanceof NativeObject nativeEventArgs) {
                     GoodieObject eventArgs = NativeGoodieFormat.INSTANCE.writeToGoodie(nativeEventArgs);
 
-                    TSLEventContext ctx = new TSLEventContext(ModRulesets.TSL, eventName);
+                    TSLEventContext ctx = new TSLEventContext(ModTSL.TSL, eventName);
                     ctx.setTarget("Minecraft:DummyPlayer");
                     ctx.getEventArgs().putAll(eventArgs);
-                    ModRulesets.triggerEvent(ctx);
+                    ModTSL.triggerEvent(ctx);
 
                     return Undefined.instance;
                 }

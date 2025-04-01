@@ -6,6 +6,11 @@
   "author": "iGoodie",
   "version": "1.0.0",
 
+  "target": {
+    "tsl_version": "^1.5.0",
+    "streamspawn_version": "^1.0.0"
+  },
+
   "events": {
     "Twitch Subscription": {
       "actor": { "string": true },

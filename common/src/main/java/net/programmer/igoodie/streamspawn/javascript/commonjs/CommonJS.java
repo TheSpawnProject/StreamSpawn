@@ -2,15 +2,15 @@ package net.programmer.igoodie.streamspawn.javascript.commonjs;
 
 import net.programmer.igoodie.streamspawn.javascript.JavascriptEngine;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.commonjs.module.provider.UrlModuleSourceProvider;
 
-import java.io.File;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CommonJS {
@@ -40,16 +40,22 @@ public class CommonJS {
     }
 
     protected List<URI> getBuiltInModulesDir() {
-        try {
-            // TODO: Make those URLs configurable, as they depend on the env and perhaps cwd
-            File modulesDir = new File(Objects.requireNonNull(CommonJS.class.getClassLoader()
-                    .getResource("assets/streamspawn/spawnjs")).toURI()).getCanonicalFile();
+        return Collections.emptyList();
+//        try {
+//            // TODO: Make those URLs configurable, as they depend on the env and perhaps cwd
+//            File modulesDir = new File(Objects.requireNonNull(CommonJS.class.getClassLoader()
+//                    .getResource("assets/streamspawn/spawnjs")).toURI()).getCanonicalFile();
+//
+//            return Collections.singletonList(modulesDir.toURI());
+//
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+    }
 
-            return Collections.singletonList(modulesDir.toURI());
-
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
+    public static void installModuleVariables(Scriptable scope) {
+        ScriptableObject.defineProperty(scope, "exports", new NativeObject(), ScriptableObject.PERMANENT);
+        ScriptableObject.defineProperty(scope, "module", new NativeObject(), ScriptableObject.PERMANENT);
     }
 
 }

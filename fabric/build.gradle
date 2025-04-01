@@ -36,9 +36,11 @@ dependencies {
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
 
-    implementation 'com.github.TheSpawnProject:TheSpawnLanguage:v1.5.1-alpha3'
+    implementation 'com.github.TheSpawnProject:TheSpawnLanguage:v1.5.1-alpha4'
     implementation 'org.mozilla:rhino:1.8.0'
     implementation "io.socket:socket.io-client:1.0.0"
+
+    implementation 'com.neovisionaries:nv-websocket-client:2.14';
 }
 
 processResources {
