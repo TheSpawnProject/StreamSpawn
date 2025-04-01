@@ -4,6 +4,7 @@ import dev.architectury.networking.NetworkManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.programmer.igoodie.goodies.runtime.GoodieObject;
 import net.programmer.igoodie.streamspawn.network.format.NbtGoodieFormat;
+import net.programmer.igoodie.tsl.runtime.executor.TSLAsyncExecutor;
 
 import java.util.function.Supplier;
 
@@ -33,8 +34,12 @@ public class TriggerEventC2SPacket extends PacketDefinition {
         NetworkManager.PacketContext context = contextSupplier.get();
 
         context.queue(() -> {
-            System.out.println("Received " + this.eventName);
-            System.out.println(" With args " + this.eventArgs);
+            // TODO: Properly implement
+            new TSLAsyncExecutor("").executeTaskAsync(() -> {
+                System.out.println("Received " + this.eventName);
+                System.out.println(" With args " + this.eventArgs);
+                return null;
+            });
         });
     }
 

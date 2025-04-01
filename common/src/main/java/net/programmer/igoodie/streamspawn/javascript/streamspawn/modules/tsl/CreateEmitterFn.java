@@ -2,10 +2,10 @@ package net.programmer.igoodie.streamspawn.javascript.streamspawn.modules.tsl;
 
 import net.programmer.igoodie.goodies.runtime.GoodieObject;
 import net.programmer.igoodie.goodies.util.accessor.ArrayAccessor;
-import net.programmer.igoodie.streamspawn.init.ModTSL;
+import net.programmer.igoodie.streamspawn.init.ModNetwork;
 import net.programmer.igoodie.streamspawn.javascript.format.NativeGoodieFormat;
 import net.programmer.igoodie.streamspawn.javascript.spawnjs.SpawnJSExceptions;
-import net.programmer.igoodie.tsl.runtime.event.TSLEventContext;
+import net.programmer.igoodie.streamspawn.network.packet.TriggerEventC2SPacket;
 import org.mozilla.javascript.*;
 
 public class CreateEmitterFn extends BaseFunction {
@@ -27,10 +27,14 @@ public class CreateEmitterFn extends BaseFunction {
                 if (arg1 instanceof NativeObject nativeEventArgs) {
                     GoodieObject eventArgs = NativeGoodieFormat.INSTANCE.writeToGoodie(nativeEventArgs);
 
-                    TSLEventContext ctx = new TSLEventContext(ModTSL.TSL, eventName);
-                    ctx.setTarget("Minecraft:DummyPlayer");
-                    ctx.getEventArgs().putAll(eventArgs);
-                    ModTSL.triggerEvent(ctx);
+                    TriggerEventC2SPacket packet = new TriggerEventC2SPacket(eventName, eventArgs);
+                    ModNetwork.CHANNEL.sendToServer(packet);
+
+//                    // TODO: Accept target from the invoker
+//                    TSLEventContext ctx = new TSLEventContext(ModTSL.TSL, eventName);
+//                    ctx.setTarget("Minecraft:DummyPlayer");
+//                    ctx.getEventArgs().putAll(eventArgs);
+//                    ModTSL.triggerEvent(ctx);
 
                     return Undefined.instance;
                 }

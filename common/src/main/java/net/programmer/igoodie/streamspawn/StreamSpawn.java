@@ -1,5 +1,7 @@
 package net.programmer.igoodie.streamspawn;
 
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.client.ClientChatEvent;
 import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.common.LifecycleEvent;
@@ -41,6 +43,16 @@ public final class StreamSpawn {
             GoodieObject eventArgs = new GoodieObject();
             eventArgs.put("actor", "iGoodie");
             ModNetwork.CHANNEL.sendToServer(new TriggerEventC2SPacket(eventName, eventArgs));
+        });
+
+        ClientChatEvent.PROCESS.register(processor -> {
+            // TODO: Impl Client-side command abstraction
+            if (processor.getMessage().equals(".ts integrations start")) {
+                ModIntegrations.start();
+                return EventResult.interrupt(true);
+            }
+
+            return EventResult.pass();
         });
     }
 
