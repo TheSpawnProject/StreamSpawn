@@ -1,0 +1,18 @@
+{
+  "$schema": "todo",
+
+  "id": "twitch_api",
+  "name": "Twitch Eventsub API",
+  "author": "iGoodie",
+  "version": "1.0.0",
+
+  "events": {
+    "Twitch Subscription": {
+      "actor": { "string": true },
+      "message": { "string": true },
+      "months": { "number": true },
+      "tier": { "number": true },
+      "gifted": { "boolean": true }
+    }
+  }
+}

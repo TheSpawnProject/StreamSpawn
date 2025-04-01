@@ -1,8 +1,9 @@
 {
   "$schema": "todo",
-  
+
   "id": "clock_tick",
   "name": "Clock Tick",
+  "author": "iGoodie",
   "version": "1.0.0",
 
   "events": {

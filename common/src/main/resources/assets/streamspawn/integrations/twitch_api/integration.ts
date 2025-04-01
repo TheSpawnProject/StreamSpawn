@@ -1,5 +1,10 @@
 import { Websocket } from "spawnjs:network";
 import { defineIntegration } from "streamspawn:integrations";
+import { createEmitter } from "streamspawn:tsl";
+
+type TslEvents = typeof import("./manifest.json")["events"];
+
+const emitTslEvent = createEmitter<TslEvents>();
 
 console.log("Enums work =", Websocket.State.OPEN.name());
 
@@ -17,6 +22,14 @@ ws.on("disconnected", (args) => {
 
 ws.on("message", (data) => {
   console.log("Got msg; State =", ws.state.name(), JSON.parse(data));
+
+  emitTslEvent("Twitch Subscription", {
+    actor: "iGoodie",
+    gifted: false,
+    message: "Hey buddy!",
+    months: 99,
+    tier: 0,
+  });
 });
 
 ws.on("error", (type, message) => {
